@@ -1,0 +1,32 @@
+[
+    {
+        "username": "user1",
+        "name": "Marco",
+        "surname": "Rossi",
+        "role": "cashier"
+    },
+    {
+        "username": "user2",
+        "name": "Mario",
+        "surname": "Verdi",
+        "role": "cook"
+    },
+    {
+        "username": "user3",
+        "name": "Alice",
+        "surname": "Barro",
+        "role": "bartender"
+    },
+    {
+        "username": "user4",
+        "name": "Giovanni",
+        "surname": "Gioia",
+        "role": "waiter"
+    },
+    {
+        "username": "user5",
+        "name": "Anna",
+        "surname": "Remi",
+        "role": "waiter"
+    }
+]

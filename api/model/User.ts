@@ -17,7 +17,7 @@ export interface User extends mongoose.Document {
     setAdmin: () => void
 }
 
-const ADMIN: string = "CASHIER";
+const ADMIN: string = "cashier";
 
 const userSchema = new mongoose.Schema<User>({
     username: {
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema<User>({
     },
     role:  {
         type: mongoose.SchemaTypes.String,
-        enum: ["CASHIER", "WAITER", "BARTENDER", "COOK"],
+        enum: ["cashier", "waiter", "bartender", "cook"],
         required: true
     },
     salt:  {

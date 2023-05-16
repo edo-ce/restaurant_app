@@ -6,6 +6,7 @@ export interface Table extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
     number: number,
     occupied: boolean,
+    seats: number,
     isFree: () => boolean,
     setFree: () => void,
     occupy: () => boolean
@@ -21,6 +22,10 @@ const tableSchema = new mongoose.Schema<Table>({
         type: mongoose.SchemaTypes.Boolean,
         required: true,
         default: false
+    },
+    seats: {
+        type: mongoose.SchemaTypes.Number,
+        required: true
     }
 })
 

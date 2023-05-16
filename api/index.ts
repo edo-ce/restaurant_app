@@ -174,7 +174,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
         if (count === 0) {
             // insert boostrap dishes
             console.log("Adding dishes on menu");
-            let dishes: dish.Dish[] = [];
+            let dishes = require('./util/dishes.json');
             return Promise.all(dishes);
         }
     }
@@ -187,8 +187,22 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
         if (count === 0) {
             // insert boostrap tables
             console.log("Adding tables");
-            let tables: table.Table[] = [];
+            let tables = require('./util/tables.json');
             return Promise.all(tables);
+        }
+    }
+).then(
+    () => {
+        return user.getModel().countDocuments({});
+    }
+).then(
+    (count) => {
+        if (count === 1) {
+            // insert bootstrap users
+            console.log("Adding users");
+            let users = require('./util/users.json');
+            console.log('JSON: ' + users);
+            return Promise.all(users);
         }
     }
 ).then(
