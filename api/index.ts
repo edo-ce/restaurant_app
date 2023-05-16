@@ -142,6 +142,16 @@ app.use((req,res,next) => {
 });
 
 
+// aux function to retrieve data from a json file
+const retrieveData = (data: [Object], type) => {
+    let ans = [];
+    data.forEach((elem) => {
+        ans.push(type.getModel().create(elem));
+    });
+    return ans;
+}
+
+
 // Connect to DB using Mongoose
 mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mongodb.net/?retryWrites=true&w=majority`)
 .then(
@@ -174,7 +184,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
         if (count === 0) {
             // insert boostrap dishes
             console.log("Adding dishes on menu");
-            let dishes = require('./util/dishes.json');
+            let dishes = retrieveData(require('./util/dishes.json'), dish);
             return Promise.all(dishes);
         }
     }
@@ -187,7 +197,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
         if (count === 0) {
             // insert boostrap tables
             console.log("Adding tables");
-            let tables = require('./util/tables.json');
+            let tables = retrieveData(require('./util/tables.json'), table);
             return Promise.all(tables);
         }
     }
@@ -200,8 +210,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
         if (count === 1) {
             // insert bootstrap users
             console.log("Adding users");
-            let users = require('./util/users.json');
-            console.log('JSON: ' + users);
+            let users = retrieveData(require('./util/users.json'), user);
             return Promise.all(users);
         }
     }
