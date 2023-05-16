@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Pizza Margherita",
+        "type": "food",
+        "price": 5.50,
+        "ingredients": ["pasta", "pomodoro", "mozzarella"]
+    }, 
+    {
+        "name": "Spaghetti allo Scoglio",
+        "type": "food",
+        "price": 8.50,
+        "ingredients": ["pasta", "pomodoro", "frutti di mare"]
+    },
+    {
+        "name": "Coca Cola",
+        "type": "drink",
+        "price": 2.50,
+        "ingredients": []
+    },
+    {
+        "name": "Birra Media",
+        "type": "drink",
+        "price": 3,
+        "ingredients": []
+    }
+]
