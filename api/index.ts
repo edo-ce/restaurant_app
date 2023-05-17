@@ -68,32 +68,113 @@ app.use((req, res, next) => {
     next();
 });
 
+const checkAdminRole = (username, next) => {
+    user.getModel().findOne(username).then((user) => {
+        if (!user.isAdmin())
+            return next({ statusCode:404, error: true, errormessage: "Unauthorized: user is not an admin"} );
+    }).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}
+
 // APIs
 
 app.get("/", (req, res) => {
     res.status(200).json({api_version: "1.0", endpoints: ["/login", "/signup", "/users"]});
 });
 
-// get all the users
-app.get("/users", auth, (req, res, next) => {
+// TODO: check if only admin can see them
+// get all the users or add a new one
+app.route("/users").get(auth, (req, res, next) => {
     user.getModel().find({}, {digest: 0, salt: 0}).then((users) => {
         return res.status(200).json(users);
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
+}).post(auth, (req, res, next) => {
+    checkAdminRole(req.auth, next);
+    let newUser = req.body;
+    if (user.isUser(newUser)) {
+        user.getModel().create(newUser).catch((reason) => {
+            return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+        });
+    } else {
+        return next({ statusCode:404, error: true, errormessage: "Data is not a valid User" });
+    }
 });
 
 // TODO: see if needed or if only admin can read it
 // TODO: check if username is wrong so no user is queried
-// get the user with username specified in the request
-app.get("/users/:username", auth, (req, res, next) => {
-    user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then((user) => {
-        return res.status(200).json(user);
+// get or delete the user with username specified in the request
+app.route("/users/:username").get(auth, (req, res, next) => {
+    checkAdminRole(req.auth, next);
+    user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
+        (user) => {
+            if (user)
+                return res.status(200).json(user);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid user ID"} );
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).delete(auth, (req, res, next) => {
+    checkAdminRole(req.auth, next);
+    user.getModel().deleteOne({username: req.params.username}).then(
+        (query) => {
+            if (query.deletedCount > 0)
+                return res.status(200).json( {error:false, errormessage:""} );
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid user ID"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    })
+});
+
+// get all the dishes or add a new dish
+app.route("/dishes").get(auth, (req, res, next) => {
+    dish.getModel().find({}).then((dishes) => {
+        return res.status(200).json(dishes);
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
+}).post(auth, (req, res, next) => {
+    checkAdminRole(req.auth, next);
+    let newDish = req.body;
+    if (dish.isDish(newDish)) {
+        dish.getModel().create(newDish).catch((reason) => {
+            return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+        });
+    } else {
+        return next({ statusCode:404, error: true, errormessage: "Data is not a valid Dish" });
+    }
 });
 
+
+// get general statistics about the restaurant
+app.get("/statistics", auth, (req, res, next) => {
+    checkAdminRole(req.auth.username, next);
+
+    // see the amount of money earned
+
+    // how much sells per dish
+
+    // when during the service there were more people
+});
+
+// get specific statistics for a user
+app.get("/statistics/:username", auth, (req, res, next) => {
+    checkAdminRole(req.auth.username, next);
+
+    // see how much orders did he/she take
+
+    // how much money did he/she make
+
+    // how many days did he/she work
+
+    // how much did he/she cook/prepare drinks
+});
 
 
 // HTTP basic authentication strategy using passport middleware

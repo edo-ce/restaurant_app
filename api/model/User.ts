@@ -1,6 +1,8 @@
 import mongoose = require('mongoose');
 import crypto = require('crypto');
 
+// TODO: aggiungi email e telefono per contatti
+
 export interface User extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
     username: string,
@@ -97,4 +99,11 @@ export function newUser(data): User {
     let _usermodel = getModel();
     let user = new _usermodel(data);
     return user;
+}
+
+export function isUser(data): data is User {
+    return data && data.username && typeof(data.username) === "string" && 
+    data.name && typeof(data.name) === "string" && 
+    data.surname && typeof(data.surname) === "string" && 
+    data.role && typeof(data.role) === "string";
 }
