@@ -123,7 +123,7 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
             if (user)
                 return res.status(200).json(user);
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid user ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid username"} );
         }
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
@@ -134,7 +134,7 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
             if (query.deletedCount > 0)
                 return res.status(200).json( {error:false, errormessage:""} );
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid user ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid username"} );
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -161,6 +161,31 @@ app.route("/dishes").get(auth, (req, res, next) => {
     }
 });
 
+// get or delete a dish from the menu
+app.route("/dishes/:id").get(auth, (req, res, next) => {
+    dish.getModel().findOne({_id: new mongoose.Types.ObjectId(req.params.id)}, {}).then(
+        (dish) => {
+            if (dish)
+                return res.status(200).json(dish);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid dish ID"} );
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).delete(auth, checkAdminRole, (req, res, next) => {
+    dish.getModel().deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)}).then(
+        (query) => {
+            if (query.deletedCount > 0)
+                return res.status(200).json( {error:false, errormessage:""} );
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid dish ID"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    })
+});
+
 // get all the tables or add a new table
 app.route("/tables").get(auth, (req, res, next) => {
     table.getModel().find({}).then((tables) => {
@@ -179,6 +204,31 @@ app.route("/tables").get(auth, (req, res, next) => {
     } else {
         return next({ statusCode:404, error: true, errormessage: "Data is not a valid Table" });
     }
+});
+
+// get or delete a table
+app.route("/tables/:number").get(auth, (req, res, next) => {
+    table.getModel().findOne({number: req.params.number}, {}).then(
+        (table) => {
+            if (table)
+                return res.status(200).json(table);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid table ID"} );
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).delete(auth, checkAdminRole, (req, res, next) => {
+    table.getModel().deleteOne({number: req.params.number}).then(
+        (query) => {
+            if (query.deletedCount > 0)
+                return res.status(200).json( {error:false, errormessage:""} );
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid table ID"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    })
 });
 
 // get general statistics about the restaurant
