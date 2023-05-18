@@ -81,7 +81,7 @@ const checkAdminRole = (req, res, next) => {
 // APIs
 
 app.get("/", (req, res) => {
-    res.status(200).json({api_version: "1.0", endpoints: ["/login", "/signup", "/users"]});
+    res.status(200).json({api_version: "1.0", endpoints: ["/login", "/users", "/statistics"]});
 });
 
 // TODO: check if only admin can see them
@@ -93,10 +93,17 @@ app.route("/users").get(auth, (req, res, next) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 }).post(auth, checkAdminRole, (req, res, next) => {
+    if (!req.body.password)
+        return next({ statusCode:404, error: true, errormessage: "Password field is missing" });
+
+    let password = req.body.password;
+    delete req.body.password;
     let newUser = req.body;
     if (user.isUser(newUser)) {
         // TODO: check if username already exists
-        user.getModel().create(newUser).then((user) => {
+        let newUser = user.newUser(req.body);
+        newUser.setPassword(password);
+        newUser.save().then((user) => {
             return res.status(200).json(user);
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -287,6 +294,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
     (count) => {
         if (count === 1) {
             // insert bootstrap users
+            // TODO: handle the password setting
             console.log("Adding users");
             let users = retrieveData(require('./util/users.json'), user);
             return Promise.all(users);
