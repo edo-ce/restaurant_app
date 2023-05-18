@@ -184,6 +184,17 @@ app.route("/dishes/:id").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
+}).post(auth, checkAdminRole, (req, res, next) => {
+    dish.getModel().updateOne({_id: new mongoose.Types.ObjectId(req.params.id)}, req.body).then(
+        (updated) => {
+            if (updated.acknowledged)
+                return res.status(200).json(updated);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    });
 });
 
 // get all the tables or add a new table
@@ -229,6 +240,17 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
+}).post(auth, checkAdminRole, (req, res, next) => {
+    table.getModel().updateOne({number: req.params.number}, req.body).then(
+        (updated) => {
+            if (updated.acknowledged)
+                return res.status(200).json(updated);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    });
 });
 
 // get general statistics about the restaurant
