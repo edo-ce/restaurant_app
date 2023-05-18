@@ -68,14 +68,15 @@ app.use((req, res, next) => {
     next();
 });
 
-const checkAdminRole = (username, next) => {
-    user.getModel().findOne(username).then((user) => {
+const checkAdminRole = (req, res, next) => {
+    user.getModel().findOne({username: req.auth.username}).then((user) => {
         if (!user.isAdmin())
-            return next({ statusCode:404, error: true, errormessage: "Unauthorized: user is not an admin"} );
+            return res.status(404).json( {error:true, errormessage:"Unauthorized: user is not an admin"} );
+        next();
     }).catch((reason) => {
-        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+        return res.status(404).json( {error:true, errormessage:"DB error: " + reason} );
     });
-}
+};
 
 // APIs
 
@@ -91,11 +92,13 @@ app.route("/users").get(auth, (req, res, next) => {
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).post(auth, (req, res, next) => {
-    checkAdminRole(req.auth, next);
+}).post(auth, checkAdminRole, (req, res, next) => {
     let newUser = req.body;
     if (user.isUser(newUser)) {
-        user.getModel().create(newUser).catch((reason) => {
+        // TODO: check if username already exists
+        user.getModel().create(newUser).then((user) => {
+            return res.status(200).json(user);
+        }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
         });
     } else {
@@ -106,8 +109,7 @@ app.route("/users").get(auth, (req, res, next) => {
 // TODO: see if needed or if only admin can read it
 // TODO: check if username is wrong so no user is queried
 // get or delete the user with username specified in the request
-app.route("/users/:username").get(auth, (req, res, next) => {
-    checkAdminRole(req.auth, next);
+app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
         (user) => {
             if (user)
@@ -118,8 +120,7 @@ app.route("/users/:username").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).delete(auth, (req, res, next) => {
-    checkAdminRole(req.auth, next);
+}).delete(auth, checkAdminRole, (req, res, next) => {
     user.getModel().deleteOne({username: req.params.username}).then(
         (query) => {
             if (query.deletedCount > 0)
@@ -139,8 +140,7 @@ app.route("/dishes").get(auth, (req, res, next) => {
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).post(auth, (req, res, next) => {
-    checkAdminRole(req.auth, next);
+}).post(auth, checkAdminRole, (req, res, next) => {
     let newDish = req.body;
     if (dish.isDish(newDish)) {
         dish.getModel().create(newDish).catch((reason) => {
@@ -153,8 +153,7 @@ app.route("/dishes").get(auth, (req, res, next) => {
 
 
 // get general statistics about the restaurant
-app.get("/statistics", auth, (req, res, next) => {
-    checkAdminRole(req.auth.username, next);
+app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
 
     // see the amount of money earned
 
@@ -164,8 +163,7 @@ app.get("/statistics", auth, (req, res, next) => {
 });
 
 // get specific statistics for a user
-app.get("/statistics/:username", auth, (req, res, next) => {
-    checkAdminRole(req.auth.username, next);
+app.get("/statistics/:username", auth, checkAdminRole, (req, res, next) => {
 
     // see how much orders did he/she take
 

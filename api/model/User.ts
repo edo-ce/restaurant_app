@@ -21,6 +21,7 @@ export interface User extends mongoose.Document {
 }
 
 const ADMIN: string = "cashier";
+const ROLES: string[] = ["cashier", "waiter", "bartender", "cook"];
 
 const userSchema = new mongoose.Schema<User>({
     username: {
@@ -103,8 +104,10 @@ export function newUser(data): User {
 }
 
 export function isUser(data): data is User {
+    // TODO: remove
+    console.log(data);
     return data && data.username && typeof(data.username) === "string" && 
     data.name && typeof(data.name) === "string" && 
     data.surname && typeof(data.surname) === "string" && 
-    data.role && typeof(data.role) === "string";
+    data.role && typeof(data.role) === "string" && ROLES.includes(data.role);
 }
