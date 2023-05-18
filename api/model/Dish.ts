@@ -64,7 +64,6 @@ export function newDish(data): Dish {
 export function isDish(data): data is Dish {
     return data && data.name && typeof(data.name) === "string" && 
     data.type && ["food", "drink"].includes(data.type) && 
-    data.surname && typeof(data.surname) === "string" && 
     data.price && typeof(data.price) === "number" && 
     data.ingredients && Array.isArray(data.ingredients) && 
     data.ingredients.every((ingredient) => typeof(ingredient) === "string");

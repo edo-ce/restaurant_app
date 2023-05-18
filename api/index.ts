@@ -68,6 +68,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// middleware to check if a user is an admin
 const checkAdminRole = (req, res, next) => {
     user.getModel().findOne({username: req.auth.username}).then((user) => {
         if (!user.isAdmin())
@@ -150,7 +151,9 @@ app.route("/dishes").get(auth, (req, res, next) => {
 }).post(auth, checkAdminRole, (req, res, next) => {
     let newDish = req.body;
     if (dish.isDish(newDish)) {
-        dish.getModel().create(newDish).catch((reason) => {
+        dish.getModel().create(newDish).then((dish) => {
+            return res.status(200).json(dish);
+        }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
         });
     } else {
@@ -158,6 +161,25 @@ app.route("/dishes").get(auth, (req, res, next) => {
     }
 });
 
+// get all the tables or add a new table
+app.route("/tables").get(auth, (req, res, next) => {
+    table.getModel().find({}).then((tables) => {
+        return res.status(200).json(tables);
+    }).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).post(auth, checkAdminRole, (req, res, next) => {
+    let newTable = req.body;
+    if (table.isTable(newTable)) {
+        table.getModel().create(newTable).then((table) => {
+            return res.status(200).json(table);
+        }).catch((reason) => {
+            return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+        });
+    } else {
+        return next({ statusCode:404, error: true, errormessage: "Data is not a valid Table" });
+    }
+});
 
 // get general statistics about the restaurant
 app.get("/statistics", auth, checkAdminRole, (req, res, next) => {

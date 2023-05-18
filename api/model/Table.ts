@@ -62,3 +62,9 @@ export function newTable(data): Table {
     let table = new _tablemodel(data);
     return table;
 }
+
+export function isTable(data): data is Table {
+    return data && data.number && typeof(data.number) === "number" && 
+    (!data.occupied || typeof(data.occupied) === "boolean") && 
+    data.seats && typeof(data.seats) === "number";
+}
