@@ -2,6 +2,7 @@ import mongoose = require('mongoose');
 import crypto = require('crypto');
 
 // TODO: aggiungi email e telefono per contatti
+// TODO: possibility to change password
 
 export interface User extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,

@@ -1,7 +1,6 @@
 import mongoose = require('mongoose');
 
 // TODO: add number of seats
-// TODO: possibility to change password
 
 export interface Table extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,

@@ -179,19 +179,18 @@ app.get("/statistics/:username", auth, (req, res, next) => {
 
 // HTTP basic authentication strategy using passport middleware
 passport.use(new passportHTTP.BasicStrategy(
-    function(username: string, password: string, done) {
-        user.getModel().findOne({username: username}, (err, user) => {
-            if (err)
-                return done({statusCode: 500, error: true, errormessage: err});
-
+    function(username, password, done) {
+        user.getModel().findOne({username: username}, {}).then((user) => {
             if (!user)
                 return done(null, false, {statusCode: 500, error: true, errormessage: "Invalid user"});
-
+            
             if (user.checkPassword(password))
                 return done(null, user);
 
             return done(null, false, {statusCode: 500, error: true, errormessage: "Invalid password"});
-        })
+        }).catch((err) => {
+            return done({statusCode: 500, error: true, errormessage: err});
+        });
     }
 ));
 

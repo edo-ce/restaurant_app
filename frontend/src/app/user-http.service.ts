@@ -6,6 +6,8 @@ import jwt_decode from "jwt-decode";
 
 interface TokenData {
   username: string,
+  name: string,
+  surname: string,
   role: string,
   id: string
 }
