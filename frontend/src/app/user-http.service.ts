@@ -72,6 +72,18 @@ export class UserHttpService {
   get_username(): string {
     return (jwt_decode(this.token) as TokenData).username;
   }
+  
+  get_name(): string {
+    return (jwt_decode(this.token) as TokenData).name;
+  }
+
+  get_surname(): string {
+    return (jwt_decode(this.token) as TokenData).surname;
+  }
+
+  get_role(): string {
+    return (jwt_decode(this.token) as TokenData).role;
+  }
 
   get_id(): string {
     return (jwt_decode(this.token) as TokenData).id;

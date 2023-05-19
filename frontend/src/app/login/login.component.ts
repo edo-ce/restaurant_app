@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
         console.log("Login granted: " + JSON.stringify(d));
         console.log("User service token: " + this.http.get_token());
         this.errmessage = undefined;
-        this.router.navigate(["/private"]);
+        this.router.navigate(["/dashboard"]);
       },
       error: (err) => {
         console.log("Login error: " + JSON.stringify(err));
