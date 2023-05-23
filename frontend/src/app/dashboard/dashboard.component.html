@@ -1,1 +1,14 @@
-<p>dashboard works!</p>
+<div [ngSwitch]="get_role()">
+    <span *ngSwitchCase="'cashier'">
+        <app-cashier></app-cashier>
+    </span> 
+    <span *ngSwitchCase="'waiter'">
+        <app-waiter></app-waiter>
+    </span> 
+    <span *ngSwitchCase="'cook'">
+        <app-cook></app-cook>
+    </span> 
+    <span *ngSwitchDefault>
+        <app-bartender></app-bartender>
+    </span>
+</div>
