@@ -1,0 +1,38 @@
+.table {
+    width: 120px;
+    height: 120px;
+    margin: 40px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.table-occupied {
+    background-color: green;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.title {
+    margin: 20px;
+}
+
+@media (max-width: 992px) {
+    .col-md-3 {
+      flex-basis: 50%;
+      max-width: 50%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .col-md-3 {
+      flex-basis: 100%;
+      max-width: 100%;
+    }
+  }
