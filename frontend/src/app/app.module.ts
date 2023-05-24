@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 
 import { UserHttpService } from './user-http.service';
+import { TableHttpService } from './table-http.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CashierComponent } from './cashier/cashier.component';
 import { WaiterComponent } from './waiter/waiter.component';
@@ -30,7 +31,8 @@ import { BartenderComponent } from './bartender/bartender.component';
     HttpClientModule
   ],
   providers: [
-    {provide: UserHttpService, useClass: UserHttpService }
+    {provide: UserHttpService, useClass: UserHttpService },
+    {provide: TableHttpService, useClass: TableHttpService }
   ],
   bootstrap: [AppComponent]
 })
