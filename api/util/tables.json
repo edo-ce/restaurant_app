@@ -6,5 +6,23 @@
     {
         "number": 2,
         "seats": 2
+    },
+    {
+        "number": 3,
+        "seats": 7,
+        "occupied": true
+    },
+    {
+        "number": 4,
+        "seats": 4
+    },
+    {
+        "number": 5,
+        "seats": 2,
+        "occupied": true
+    },
+    {
+        "number": 6,
+        "seats": 7
     }
 ]

@@ -3,19 +3,12 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { UserHttpService } from './user-http.service';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-
-interface Table {
-  number: number,
-  occupied: boolean,
-  seats: number
-}
+import { Table } from './model/Table';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TableHttpService {
-
-  private tables: Object = {};
 
   constructor(private http: HttpClient, private us: UserHttpService) {
     console.log('Message service instantiated');
@@ -53,23 +46,16 @@ export class TableHttpService {
   // returns the list of existing tables
   get_tables(): Observable<Table[]> {
     return this.http.get<Table[]>(this.us.url + '/tables', this.create_options({})).pipe(
-        tap( (data) => console.log(JSON.stringify(data))),
+        tap( (data) => {
+          console.log(JSON.stringify(data));
+        }),
         catchError(this.handleError)
     );
   }
 
-  // returns the number of existing tables
-  get_tables_number(): number {
-    return Object.keys(this.tables).length;
-  }
-
-  change_state(number: number, occupied: boolean): Observable<Table> {
-    return this.http.post<Table>(this.us.url + '/tables/' + number, this.create_options({occupied: occupied})).pipe(
+  set_table(number: number, data: Object): Observable<Table> {
+    return this.http.post<Table>(this.us.url + '/tables/' + number, this.create_options(data)).pipe(
       catchError(this.handleError)
     )
-  }
-
-  is_free(number: number): boolean {
-    return true;
   }
 }

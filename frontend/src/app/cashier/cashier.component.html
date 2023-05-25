@@ -41,39 +41,23 @@
 <!-- TABLES GRID -->
 
 <div class="container container-grid">
-    <h1 class="title">Restaurant Tables</h1>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="table table-green">
-          <p>Tavolo 1</p>
-        </div>
-        <div class="table table-yellow">
-          <p>Tavolo 2</p>
-        </div>
+  <h1 class="title">Restaurant Tables</h1>
+
+  <div class="row">
+
+    <div class="col-md-3" *ngFor="let i of cols_number">
+      <div *ngFor="let table of tables; let j = index">
+        <div *ngIf="j % cols_number.length === i">
+          <div class="table table-occupied" *ngIf="table.occupied">
+            <p>Table {{table.number}}</p>
+          </div>
+          <div class="table" *ngIf="!table.occupied">
+            <p>Table {{table.number}}</p>
+          </div>
       </div>
-      <div class="col-md-3">
-        <div class="table table-red">
-          <p>Tavolo 3</p>
-        </div>
-        <div class="table table-blue">
-          <p>Tavolo 4</p>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="table table-orange">
-          <p>Tavolo 5</p>
-        </div>
-        <div class="table">
-          <p>Tavolo 6</p>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="table">
-          <p>Tavolo 7</p>
-        </div>
-        <div class="table">
-          <p>Tavolo 8</p>
-        </div>
       </div>
     </div>
+
   </div>
+
+</div>
