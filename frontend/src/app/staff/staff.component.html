@@ -1,0 +1,15 @@
+<div class="container">
+    <h1 class="title text-center">Restaurant Staff</h1>
+
+    <ul class="list-group">
+        <div *ngFor="let user of users">
+            <a href="#" class="list-group-item list-group-item-action" *ngIf="user.username !== get_username()">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{user.username}}</h5>
+                    <small>{{user.role}}</small>
+                </div>
+                <p class="mb-1">{{user.name}} {{user.surname}}</p>
+            </a>
+        </div>
+    </ul>
+</div>

@@ -1,0 +1,9 @@
+.container {
+    align-items: center;
+    height: 100%;
+    width: 80%;
+}
+
+.title {
+    margin: 20px;
+}

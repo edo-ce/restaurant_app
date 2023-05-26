@@ -10,7 +10,11 @@
 
 .table-occupied {
     background-color: red;
-  }
+}
+
+.table-free {
+  background-color: green;
+}
 
 .container {
     display: flex;
@@ -24,15 +28,15 @@
 }
 
 @media (max-width: 992px) {
-    .col-md-3 {
-      flex-basis: 50%;
-      max-width: 50%;
-    }
+  .col-md-3 {
+    flex-basis: 50%;
+    max-width: 50%;
   }
+}
   
-  @media (max-width: 768px) {
-    .col-md-3 {
-      flex-basis: 100%;
-      max-width: 100%;
-    }
+@media (max-width: 768px) {
+  .col-md-3 {
+    flex-basis: 100%;
+    max-width: 100%;
   }
+}

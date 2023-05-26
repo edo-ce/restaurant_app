@@ -13,6 +13,8 @@ import { CashierComponent } from './cashier/cashier.component';
 import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { StaffComponent } from './staff/staff.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { BartenderComponent } from './bartender/bartender.component';
     CashierComponent,
     WaiterComponent,
     CookComponent,
-    BartenderComponent
+    BartenderComponent,
+    NavbarComponent,
+    StaffComponent
   ],
   imports: [
     BrowserModule,

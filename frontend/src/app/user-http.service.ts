@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import jwt_decode from "jwt-decode";
+import { User } from './model/User';
 
 interface TokenData {
   username: string,
@@ -24,6 +25,7 @@ export class UserHttpService {
   private token: string = "";
   private static ADMIN: string = "cashier";
   public url = "http://localhost:8080";
+  public roles: string[] = ["cashier", "cook", "bartender", "waiter"];
 
   constructor(private http: HttpClient) {
     console.log("User service instantiated");
@@ -36,6 +38,32 @@ export class UserHttpService {
       this.token = localtoken as string;
       console.log("JWT loaded from local storage");
     }
+  }
+
+  private create_options( params = {} ) {
+    return  {
+      headers: new HttpHeaders({
+        authorization: 'Bearer ' + this.get_token(),
+        'cache-control': 'no-cache',
+        'Content-Type':  'application/json',
+      }),
+      params: new HttpParams( {fromObject: params} )
+    };
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        'body was: ' + JSON.stringify(error.error));
+    }
+
+    return throwError(() => new Error('Something bad happened; please try again later.') );
   }
 
   login(username: string, password: string, remember: boolean): Observable<any> {
@@ -91,5 +119,14 @@ export class UserHttpService {
 
   is_admin(): boolean {
     return (jwt_decode(this.token) as TokenData).role === UserHttpService.ADMIN;
+  }
+
+  get_users(): Observable<User[]> {
+    return this.http.get<User[]>(this.url + '/users', this.create_options({})).pipe(
+      tap( (data) => {
+        console.log(JSON.stringify(data));
+      }),
+      catchError(this.handleError)
+    );
   }
 }

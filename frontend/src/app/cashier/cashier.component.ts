@@ -16,7 +16,6 @@ export class CashierComponent implements OnInit {
 
   ngOnInit(): void {
       this.get_tables();
-      console.log(this.cols_number);
   }
 
   public get_tables(): void {
@@ -24,8 +23,7 @@ export class CashierComponent implements OnInit {
       next: (tables) => {
         this.tables = tables.sort((a, b) => a.number - b.number);
       },
-      error: (err) => {
-      }
+      error: (err) => {}
     });
   }
 
