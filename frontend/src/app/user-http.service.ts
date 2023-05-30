@@ -129,4 +129,18 @@ export class UserHttpService {
       catchError(this.handleError)
     );
   }
+
+  post_user(data: User): Observable<User> {
+    let new_user: any = data;
+    new_user.password = '';
+    return this.http.post<User>(this.url + '/users', new_user, this.create_options()).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  delete_user(username: string): Observable<User> {
+    return this.http.delete<User>(this.url + '/users/' + username, this.create_options()).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

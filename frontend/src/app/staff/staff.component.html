@@ -3,13 +3,104 @@
 
     <ul class="list-group">
         <div *ngFor="let user of users">
-            <a href="#" class="list-group-item list-group-item-action" *ngIf="user.username !== get_username()">
+            <div class="list-group-item list-group-item-action" *ngIf="user.username !== get_username()">
+            
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{user.username}}</h5>
+                    <a class="user-link" href="#">
+                      <h5 class="mb-1">{{user.username}}</h5>
+                    </a>
                     <small>{{user.role}}</small>
                 </div>
+                <div class="d-flex w-100 justify-content-between">
                 <p class="mb-1">{{user.name}} {{user.surname}}</p>
-            </a>
+                
+                  <span class="bi bi-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteUserModal" (click)="set_curr_user(user.username)"></span>
+                
+              </div>
+            
+          </div>
         </div>
     </ul>
+
+    <div class="col text-center">
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addUserModal">Add member</button>
+    </div>
+
+    <!-- Modal Add New User -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add a staff member</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            
+                
+                    <form class="form-signin"  >
+                      
+                      <div class="form-group">
+                        <label for="inputUsername">Username</label>
+                        <input type="text" #username required name="username" class="form-control" id="inputUsername" placeholder="Enter username">
+                      </div>                
+                    
+                      <div class="form-group">
+                        <label for="inputUsername">Name</label>
+                        <input type="text" #name required name="name" class="form-control" id="inputName" placeholder="Enter name">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="inputUsername">Surname</label>
+                        <input type="text" #surname required name="surname" class="form-control" id="inputSurname" placeholder="Enter surname">
+                      </div>
+
+                      <div class="form-group">
+                      <label for="inputUsername">Role</label>
+                      <select #role class="form-select" aria-label="Choose a role">
+                        <option value="cashier">Cashier</option>
+                        <option value="cook">Cook</option>
+                        <option value="bartender">Bartender</option>
+                        <option value="waiter">Waiter</option>
+                      </select>
+                    </div>
+                    
+                      <div *ngIf="errmessage" class="alert alert-danger" role="alert">
+                        Signup error: {{errmessage}}
+                      </div>
+                    
+                      <button type="submit" class="btn btn-lg btn-primary btn-block" [disabled]=" !username || !name || !surname || !role" (click)="add_user({
+                        'username': username.value,
+                        'name': name.value,
+                        'surname': surname.value,
+                        'role': role.value
+                      });" >Sign up</button>
+                    </form>
+
+            </div>
+
+        </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete User -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form action="">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete {{get_curr_user()}}?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger" (click)="delete_user(get_curr_user())">Delete</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
 </div>

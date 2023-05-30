@@ -10,6 +10,8 @@ import { UserHttpService } from '../user-http.service';
 export class StaffComponent implements OnInit {
 
   public users: User[] = [];
+  private curr_user: string = '';
+  errmessage = undefined;
 
   constructor(private us: UserHttpService) {}
 
@@ -29,5 +31,39 @@ export class StaffComponent implements OnInit {
 
   public get_username(): string {
     return this.us.get_username();
+  }
+
+  public add_user(data: User): void{
+    this.us.post_user(data).subscribe({
+      next: (user) => {
+        console.log('User added:' + JSON.stringify(user));
+        this.errmessage = undefined;
+      },
+      error: (error) => {
+        console.log('Signup error: ' + JSON.stringify(error.error.errormessage) );
+        this.errmessage = error.error.errormessage || error.error.message;
+      }});
+  }
+
+  public delete_user(username: string): void {
+    this.us.delete_user(username).subscribe({
+      next: () => {
+        console.log('User ' + username + ' deleted');
+        this.errmessage = undefined;
+      },
+      error: (error) => {
+        console.log('Signup error: ' + JSON.stringify(error.error.errormessage) );
+        this.errmessage = error.error.errormessage || error.error.message;
+      }
+    })
+  }
+
+  public set_curr_user(username: string): void {
+    this.curr_user = username;
+  }
+
+  public get_curr_user(): string {
+    console.log(this.curr_user);
+    return this.curr_user;
   }
 }

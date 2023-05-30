@@ -94,7 +94,7 @@ app.route("/users").get(auth, (req, res, next) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 }).post(auth, checkAdminRole, (req, res, next) => {
-    if (!req.body.password)
+    if (req.body.password !== '' && !req.body.password)
         return next({ statusCode:404, error: true, errormessage: "Password field is missing" });
 
     let password = req.body.password;

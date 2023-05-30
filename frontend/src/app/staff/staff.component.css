@@ -7,3 +7,20 @@
 .title {
     margin: 20px;
 }
+
+.add-button {
+    margin: 20px;
+}
+
+.form-group {
+    margin: 20px 0px;
+}
+
+.trash-icon:hover {
+    cursor: pointer;
+}
+
+.user-link {
+    text-decoration: none;
+    color: black;
+}
