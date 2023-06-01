@@ -29,4 +29,10 @@ export class TableHttpService {
       catchError(this.us.handleError)
     )
   }
+
+  get_table(number: number): Observable<Table> {
+    return this.http.get<Table>(this.us.url + '/tables/' + number, this.us.create_options({})).pipe(
+      catchError(this.us.handleError)
+    )
+  }
 }

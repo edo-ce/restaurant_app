@@ -22,8 +22,33 @@
         </div>
     </ul>
 
+    <div class="bottom-area">
+        <h5>People: {{table_seats}}</h5>
+    </div>
+
     <div class="col text-center">
-        <button type="submit" class="btn btn-success btn-lg pay-button" data-bs-toggle="modal" data-bs-target="#addUserModal">Payout</button>
+        <button type="submit" class="btn btn-success btn-lg pay-button" data-bs-toggle="modal" data-bs-target="#payout" (click)="get_price()">Payout</button>
+    </div>
+
+    <!-- Modal Delete User -->
+    <div class="modal fade" id="payout" tabindex="-1" aria-labelledby="payout" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to pay {{total_price}}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" (click)="free_table()">Pay</button>
+                </div>
+            </form>
+        </div>
+        </div>
     </div>
 
 </div>
