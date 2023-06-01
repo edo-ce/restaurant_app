@@ -61,7 +61,7 @@ export class OrdersComponent implements OnInit {
 
   public free_table() {
     this.ts.set_table(this.parameter, {"occupied": false}).subscribe( {
-      next: () => {
+      next: (table) => {
       console.log('Table status changed');
       // TODO: remove all the orders of the table
       this.router.navigate(["dashboard"]);

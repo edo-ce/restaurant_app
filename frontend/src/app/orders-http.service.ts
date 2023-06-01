@@ -27,8 +27,6 @@ export class OrdersHttpService {
   compute_price(orders: Order[], table_seats: number): number {
     if (orders.length === 0)
       return 0;
-      
-    console.log("COMPUTE PRICE: " + orders[0].table_number);
 
     let total_price: number = table_seats * OrdersHttpService.FEE;
     orders.forEach((order) => {
