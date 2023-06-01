@@ -2,6 +2,7 @@ import mongoose = require('mongoose');
 import * as user from './model/User';
 import * as table from './model/Table';
 import * as dish from './model/Dish';
+import * as order from './model/Order';
 
 import http = require('http');
 import https = require('https');
@@ -14,7 +15,7 @@ import passportHTTP = require('passport-http');  // implements Basic and Digest 
 import jsonwebtoken = require('jsonwebtoken');  // JWT generation
 const { expressjwt: jwt } = require('express-jwt');            // JWT parsing middleware for express
 import cors = require('cors');                  // Enable CORS middleware
-//const io = require('socket.io');               // Socket.io websocket library
+const io = require('socket.io');               // Socket.io websocket library
 
 
 // TODO: check this code about .env
@@ -34,8 +35,7 @@ declare global {
             username: string,
             name: string,
             surname: string,
-            role: string,
-            id: string
+            role: string
         }
 
         interface Request {
@@ -46,6 +46,7 @@ declare global {
     }
 }
 
+let ios = undefined;
 let app = express();
 
 // authenticathion middleware using jwt
@@ -217,14 +218,14 @@ app.route("/tables").get(auth, (req, res, next) => {
     }
 });
 
-// get or delete a table
+// get or delete or update a table
 app.route("/tables/:number").get(auth, (req, res, next) => {
     table.getModel().findOne({number: req.params.number}, {}).then(
         (table) => {
             if (table)
                 return res.status(200).json(table);
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid table ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid table number"} );
         }
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
@@ -235,7 +236,7 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
             if (query.deletedCount > 0)
                 return res.status(200).json( {error:false, errormessage:""} );
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid table ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid table number"} );
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -252,6 +253,102 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     });
 });
+
+// get all the orders or add a new order
+app.route("/orders").get(auth, (req, res, next) => {
+    order.getModel().find({}).then((orders) => {
+        return res.status(200).json(orders);
+    }).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).post(auth, checkAdminRole, (req, res, next) => {
+    let newOrder = req.body;
+    if (order.isOrder(newOrder)) {
+        order.getModel().create(newOrder).then((order) => {
+            ios.emit('broadcast', order);
+            return res.status(200).json(order);
+        }).catch((reason) => {
+            return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+        });
+    } else {
+        return next({ statusCode:404, error: true, errormessage: "Data is not a valid Order" });
+    }
+});
+
+// get or delete or update an order
+app.route("/orders/:id").get(auth, (req, res, next) => {
+    order.getModel().findOne({_id: req.params.id}, {}).then(
+        (order) => {
+            if (order)
+                return res.status(200).json(order);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid order ID"} );
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).delete(auth, (req, res, next) => {
+    order.getModel().deleteOne({_id: req.params.id}).then(
+        (query) => {
+            if (query.deletedCount > 0)
+                return res.status(200).json( {error:false, errormessage:""} );
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid order ID"} );
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    })
+}).post(auth, (req, res, next) => {
+    // TODO: what happen if in the dishes there aren't dishes in the db?
+    order.getModel().updateOne({_id: req.params.id}, req.body).then(
+        (updated) => {
+            if (updated.acknowledged) {
+                ios.emit('broadcast', order);
+                return res.status(200).json(updated);
+            } else {
+                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+            }
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    });
+});
+
+app.get("/table/:number/orders", auth, (req, res, next) => {
+    table.getModel().findOne({number: req.params.number}).then(
+        (table) => {
+            if (!table)
+                return next({ statusCode:404, error: true, errormessage: "Number is not a valid table"});
+            order.getModel().find({table_number: req.params.number}).then(
+                (orders) => {
+                    return res.status(200).json(orders);
+                }
+            ).catch((reason) => {
+                return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+            });
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+});
+
+app.get("/user/:username/orders", auth, (req, res, next) => {
+    user.getModel().findOne({username: req.params.username}).then(
+        (user) => {
+            if (!user)
+                return next({ statusCode:404, error: true, errormessage: "Username is not a valid user"});
+            order.getModel().find({creator_username: req.params.username}).then(
+                (orders) => {
+                    return res.status(200).json(orders);
+                }
+            ).catch((reason) => {
+                return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+            });
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    })
+})
 
 // get general statistics about the restaurant
 app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
@@ -298,8 +395,7 @@ app.get("/login", passport.authenticate("basic", {session: false}), (req, res, n
         username: req.user.username,
         name: req.user.name,
         surname: req.user.surname,
-        role: req.user.role,
-        id: req.user.id
+        role: req.user.role
     };
 
     console.log("Login granted. Generating token" );
@@ -396,9 +492,25 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
     }
 ).then(
     () => {
+        return order.getModel().countDocuments({});
+    }
+).then(
+    (count) => {
+        if (count === 0) {
+            // insert boostrap tables
+            console.log("Adding orders");
+            let orders = retrieveData(require('./util/orders.json'), order);
+            return Promise.all(orders);
+        }
+    }
+).then(
+    () => {
         let server = http.createServer(app);
 
-        // initialize io server
+        ios = io(server);
+        ios.on('connection', (client) => {
+        console.log("Socket.io client connected".green);
+        });
 
         server.listen(8080, () => console.log("HTTP Server started on port 8080".green));
     }

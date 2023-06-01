@@ -1,0 +1,50 @@
+[
+    {
+        "creator_username": "admin",
+        "table_number": 3,
+        "dishes": [
+            [{
+                "name": "Coca Cola",
+                "type": "drink",
+                "price": 2.50,
+                "ingredients": []
+            }, 2],
+            [{
+                "name": "Spaghetti allo Scoglio",
+                "type": "food",
+                "price": 8.50,
+                "ingredients": ["pasta", "pomodoro", "frutti di mare"]
+            }, 1],
+            [{
+                "name": "Pizza Margherita",
+                "type": "food",
+                "price": 5.50,
+                "ingredients": ["pasta", "pomodoro", "mozzarella"]
+            }, 1]
+        ]
+    },
+    {
+        "creator_username": "user1",
+        "table_number": 2,
+        "dishes": [
+            [{
+                "name": "Coca Cola",
+                "type": "drink",
+                "price": 2.50,
+                "ingredients": []
+            }, 1],
+            [{
+                "name": "Birra Media",
+                "type": "drink",
+                "price": 3,
+                "ingredients": []
+            }, 1],
+            [{
+                "name": "Pizza Margherita",
+                "type": "food",
+                "price": 5.50,
+                "ingredients": ["pasta", "pomodoro", "mozzarella"]
+            }, 2]
+        ]
+    }
+]

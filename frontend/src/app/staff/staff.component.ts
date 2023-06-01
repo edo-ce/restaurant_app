@@ -49,6 +49,7 @@ export class StaffComponent implements OnInit {
     this.us.delete_user(username).subscribe({
       next: () => {
         console.log('User ' + username + ' deleted');
+        this.curr_user = '';
         this.errmessage = undefined;
       },
       error: (error) => {
@@ -63,7 +64,6 @@ export class StaffComponent implements OnInit {
   }
 
   public get_curr_user(): string {
-    console.log(this.curr_user);
     return this.curr_user;
   }
 }

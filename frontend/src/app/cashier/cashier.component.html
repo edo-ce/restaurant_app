@@ -8,7 +8,7 @@
   <div class="row">
 
     <div class="col-md-3" *ngFor="let i of cols_number">
-      <div *ngFor="let table of tables; let j = index">
+      <div *ngFor="let table of tables; let j = index" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
         <div *ngIf="j % cols_number.length === i">
           <div class="table table-occupied" *ngIf="table.occupied">
             <p>Table {{table.number}}</p>
@@ -20,6 +20,30 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- Modal Delete User -->
+  <div class="modal fade" id="tableOptions" tabindex="-1" aria-labelledby="tableOptions" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form>
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Table {{get_curr_table().number}}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Seats capacity: {{get_curr_table().seats_capacity}} 
+          <br>
+          <p *ngIf="get_curr_table().occupied">Seats occupied: {{get_curr_table().seats_occupied}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
+          <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="change_table_state(true)">Occupy</button>
+        </div>
+      </form>
+      </div>
+    </div>
   </div>
 
 </div>

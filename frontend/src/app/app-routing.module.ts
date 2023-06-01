@@ -7,6 +7,7 @@ import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { StaffComponent } from './staff/staff.component';
+import { OrdersComponent } from './orders/orders.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "/login", pathMatch: "full"},
@@ -15,7 +16,8 @@ const routes: Routes = [
     // TODO: check only cashier
     
   ]},
-  {path: "staff", component: StaffComponent}
+  {path: "staff", component: StaffComponent},
+  {path: "orders/:model/:parameter", component: OrdersComponent}
 ];
 
 @NgModule({

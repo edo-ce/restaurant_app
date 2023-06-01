@@ -1,10 +1,10 @@
 import mongoose = require('mongoose');
 
 export interface Table extends mongoose.Document {
-    readonly _id: mongoose.Schema.Types.ObjectId,
     number: number,
     occupied: boolean,
-    seats: number,
+    seats_capacity: number,
+    seats_occupied: number,
     isFree: () => boolean,
     setFree: () => void,
     occupy: () => boolean
@@ -21,9 +21,14 @@ const tableSchema = new mongoose.Schema<Table>({
         required: true,
         default: false
     },
-    seats: {
+    seats_capacity: {
         type: mongoose.SchemaTypes.Number,
         required: true
+    },
+    seats_occupied: {
+        type: mongoose.SchemaTypes.Number,
+        required: true,
+        default: 0
     }
 })
 
@@ -62,7 +67,8 @@ export function newTable(data): Table {
 }
 
 export function isTable(data): data is Table {
+    console.log(data);
     return data && data.number && typeof(data.number) === "number" && 
     (!data.occupied || typeof(data.occupied) === "boolean") && 
-    data.seats && typeof(data.seats) === "number";
+    data.seats_capacity && typeof(data.seats_capacity) === "number";
 }

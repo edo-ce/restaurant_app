@@ -1,5 +1,6 @@
 export interface Table {
     number: number,
     occupied: boolean,
-    seats: number
+    seats_capacity: number,
+    seats_occupied: number
 }

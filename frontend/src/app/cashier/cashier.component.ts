@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Table } from '../model/Table';
 import { TableHttpService } from '../table-http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cashier',
@@ -11,8 +12,9 @@ export class CashierComponent implements OnInit {
 
   public tables: Table[] = [];
   public cols_number: number[] = [0, 1, 2, 3];
+  private curr_table: Table = {"number": 0, "occupied": true, "seats_capacity": 4, "seats_occupied": 4};
 
-  constructor(private ts: TableHttpService) { }
+  constructor(private ts: TableHttpService, private router: Router) { }
 
   ngOnInit(): void {
       this.get_tables();
@@ -23,7 +25,9 @@ export class CashierComponent implements OnInit {
       next: (tables) => {
         this.tables = tables.sort((a, b) => a.number - b.number);
       },
-      error: (err) => {}
+      error: (error) => {
+        console.log('Error occured while getting: ' + error);
+      }
     });
   }
 
@@ -31,7 +35,25 @@ export class CashierComponent implements OnInit {
     return this.tables.length;
   }
 
-  public change_table_state(number: number, occupied: boolean): void {
-    this.ts.set_table(number, {'occupied': occupied});
+  public change_table_state(occupied: boolean): void {
+    this.ts.set_table(this.curr_table.number, {"occupied": occupied}).subscribe( {
+      next: () => {
+      console.log('Table status changed');
+    },
+    error: (error) => {
+      console.log('Error occurred while posting: ' + error);
+    }});
+  }
+
+  public set_curr_table(table: Table): void {
+    this.curr_table = table;
+  }
+
+  public get_curr_table(): Table {
+    return this.curr_table;
+  }
+
+  public open_history() {
+    this.router.navigate(["orders/table/" + this.curr_table.number]);
   }
 }

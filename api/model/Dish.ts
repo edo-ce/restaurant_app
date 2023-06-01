@@ -10,6 +10,8 @@ export interface Dish extends mongoose.Document {
     isFood(): boolean
 }
 
+const TYPE_ENUM: string[] = ["food", "drink"];
+
 const dishSchema = new mongoose.Schema<Dish>({
     name: {
         type: mongoose.SchemaTypes.String,
@@ -17,7 +19,7 @@ const dishSchema = new mongoose.Schema<Dish>({
     },
     type: {
         type: mongoose.SchemaTypes.String,
-        enum: ["food", "drink"],
+        enum: TYPE_ENUM,
         required: true
     },
     price: {
@@ -62,8 +64,9 @@ export function newDish(data): Dish {
 }
 
 export function isDish(data): data is Dish {
+    console.log(data);
     return data && data.name && typeof(data.name) === "string" && 
-    data.type && ["food", "drink"].includes(data.type) && 
+    data.type && TYPE_ENUM.includes(data.type) && 
     data.price && typeof(data.price) === "number" && 
     data.ingredients && Array.isArray(data.ingredients) && 
     data.ingredients.every((ingredient) => typeof(ingredient) === "string");

@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 
 import { UserHttpService } from './user-http.service';
 import { TableHttpService } from './table-http.service';
+import { OrdersHttpService } from './orders-http.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CashierComponent } from './cashier/cashier.component';
 import { WaiterComponent } from './waiter/waiter.component';
@@ -15,6 +16,7 @@ import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StaffComponent } from './staff/staff.component';
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { StaffComponent } from './staff/staff.component';
     CookComponent,
     BartenderComponent,
     NavbarComponent,
-    StaffComponent
+    StaffComponent,
+    OrdersComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,8 @@ import { StaffComponent } from './staff/staff.component';
   ],
   providers: [
     {provide: UserHttpService, useClass: UserHttpService },
-    {provide: TableHttpService, useClass: TableHttpService }
+    {provide: TableHttpService, useClass: TableHttpService },
+    {provide: OrdersHttpService, useClass: OrdersHttpService }
   ],
   bootstrap: [AppComponent]
 })

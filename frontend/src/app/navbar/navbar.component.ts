@@ -8,6 +8,7 @@ import { UserHttpService } from '../user-http.service';
 })
 export class NavbarComponent implements OnInit {
   private role: string = "";
+  private curr_route: string = "dashboard";
 
   constructor(private us: UserHttpService) {}
 
@@ -17,5 +18,14 @@ export class NavbarComponent implements OnInit {
 
   get_role(): string {
     return this.role;
+  }
+
+  set_route(route: string): void {
+    this.curr_route = route;
+    console.log(this.curr_route);
+  }
+
+  check_route(route: string): boolean {
+    return this.curr_route === route;
   }
 }

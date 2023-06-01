@@ -9,8 +9,7 @@ interface TokenData {
   username: string,
   name: string,
   surname: string,
-  role: string,
-  id: string
+  role: string
 }
 
 interface ReceivedToken {
@@ -40,7 +39,7 @@ export class UserHttpService {
     }
   }
 
-  private create_options( params = {} ) {
+  public create_options( params = {} ) {
     return  {
       headers: new HttpHeaders({
         authorization: 'Bearer ' + this.get_token(),
@@ -51,7 +50,7 @@ export class UserHttpService {
     };
   }
 
-  private handleError(error: HttpErrorResponse) {
+  public handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
@@ -111,10 +110,6 @@ export class UserHttpService {
 
   get_role(): string {
     return (jwt_decode(this.token) as TokenData).role;
-  }
-
-  get_id(): string {
-    return (jwt_decode(this.token) as TokenData).id;
   }
 
   is_admin(): boolean {

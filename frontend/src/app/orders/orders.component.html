@@ -1,0 +1,29 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+    <h1 class="title text-center">Table {{get_parameter()}} Orders History</h1>
+
+    <ul class="list-group">
+        <div class="list-group-item list-group-item-action" *ngFor="let order of orders">
+            
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{order.time | date: 'shortTime'}}</h5>
+                <small>{{order.creator_username}}</small>
+            </div>
+            
+            <ul>
+                <div *ngFor="let dish_pair of order.dishes">
+                    <li>
+                        <p class="mb-1">{{dish_pair[0].name}} x{{dish_pair[1]}}</p>
+                    </li>
+                </div>
+            </ul>
+            
+        </div>
+    </ul>
+
+    <div class="col text-center">
+        <button type="submit" class="btn btn-success btn-lg pay-button" data-bs-toggle="modal" data-bs-target="#addUserModal">Payout</button>
+    </div>
+
+</div>

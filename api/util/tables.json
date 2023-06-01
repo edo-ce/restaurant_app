@@ -1,28 +1,30 @@
 [
     {
         "number": 1,
-        "seats": 4
+        "seats_capacity": 4
     },
     {
         "number": 2,
-        "seats": 2
+        "seats_capacity": 2
     },
     {
         "number": 3,
-        "seats": 7,
+        "seats_capacity": 7,
+        "seats_occupied": 6,
         "occupied": true
     },
     {
         "number": 4,
-        "seats": 4
+        "seats_capacity": 4
     },
     {
         "number": 5,
-        "seats": 2,
+        "seats_capacity": 2,
+        "seats_occupied": 2,
         "occupied": true
     },
     {
         "number": 6,
-        "seats": 7
+        "seats_capacity": 7
     }
 ]

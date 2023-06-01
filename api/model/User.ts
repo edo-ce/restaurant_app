@@ -5,7 +5,6 @@ import crypto = require('crypto');
 // TODO: possibility to change password
 
 export interface User extends mongoose.Document {
-    readonly _id: mongoose.Schema.Types.ObjectId,
     username: string,
     name: string,
     surname: string,
