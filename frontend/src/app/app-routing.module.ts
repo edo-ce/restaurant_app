@@ -8,6 +8,7 @@ import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
+import { MenuComponent } from './menu/menu.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "/login", pathMatch: "full"},
@@ -17,6 +18,7 @@ const routes: Routes = [
     
   ]},
   {path: "staff", component: StaffComponent},
+  {path: "menu", component: MenuComponent},
   {path: "orders/:model/:parameter", component: OrdersComponent}
 ];
 

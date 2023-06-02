@@ -15,6 +15,10 @@
             <a class="nav-link" routerLink="/staff" (click)="set_route('staff')" *ngIf="!check_route('staff')">Staff</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link active" aria-current="page" routerLink="/menu" (click)="set_route('menu')" *ngIf="check_route('menu')">Menu</a>
+            <a class="nav-link" routerLink="/menu" (click)="set_route('menu')" *ngIf="!check_route('menu')">Menu</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link active" aria-current="page" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="check_route('statistics')">Statistics</a>
             <a class="nav-link" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="!check_route('statistics')">Statistics</a>
         </li>

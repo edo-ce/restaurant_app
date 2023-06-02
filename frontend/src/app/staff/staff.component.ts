@@ -40,9 +40,9 @@ export class StaffComponent implements OnInit {
         this.errmessage = undefined;
       },
       error: (error) => {
-        console.log('Signup error: ' + JSON.stringify(error.error.errormessage) );
+        console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
         this.errmessage = error.error.errormessage || error.error.message;
-      }});
+    }});
   }
 
   public delete_user(username: string): void {
@@ -53,7 +53,7 @@ export class StaffComponent implements OnInit {
         this.errmessage = undefined;
       },
       error: (error) => {
-        console.log('Signup error: ' + JSON.stringify(error.error.errormessage) );
+        console.log('Delete error: ' + JSON.stringify(error.error.errormessage) );
         this.errmessage = error.error.errormessage || error.error.message;
       }
     })

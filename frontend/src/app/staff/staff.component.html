@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <h1 class="title text-center">Restaurant Staff</h1>
+    <h1 class="title text-center">Staff</h1>
 
     <ul class="list-group">
         <div *ngFor="let user of users">
@@ -39,7 +39,7 @@
             <div class="modal-body">
             
                 
-                    <form class="form-signin"  >
+                    <form>
                       
                       <div class="form-group">
                         <label for="inputUsername">Username</label>
@@ -47,17 +47,17 @@
                       </div>                
                     
                       <div class="form-group">
-                        <label for="inputUsername">Name</label>
+                        <label for="inputName">Name</label>
                         <input type="text" #name required name="name" class="form-control" id="inputName" placeholder="Enter name">
                       </div>
 
                       <div class="form-group">
-                        <label for="inputUsername">Surname</label>
+                        <label for="inputSurname">Surname</label>
                         <input type="text" #surname required name="surname" class="form-control" id="inputSurname" placeholder="Enter surname">
                       </div>
 
                       <div class="form-group">
-                      <label for="inputUsername">Role</label>
+                      <label for="inputRole">Role</label>
                       <select #role class="form-select" aria-label="Choose a role">
                         <option value="cashier">Cashier</option>
                         <option value="cook">Cook</option>
@@ -75,7 +75,7 @@
                         'name': name.value,
                         'surname': surname.value,
                         'role': role.value
-                      });" >Sign up</button>
+                      });" >Add</button>
                     </form>
 
             </div>

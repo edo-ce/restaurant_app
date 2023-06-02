@@ -1,7 +1,6 @@
 import mongoose = require('mongoose');
 
 export interface Dish extends mongoose.Document {
-    readonly _id: mongoose.Schema.Types.ObjectId,
     name: string,
     type: string,
     price: number,
@@ -15,6 +14,7 @@ const TYPE_ENUM: string[] = ["food", "drink"];
 const dishSchema = new mongoose.Schema<Dish>({
     name: {
         type: mongoose.SchemaTypes.String,
+        unique: true,
         required: true
     },
     type: {

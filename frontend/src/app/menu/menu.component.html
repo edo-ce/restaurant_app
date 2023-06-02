@@ -1,0 +1,112 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+    <h1 class="title text-center">Menu</h1>
+
+    <div *ngFor="let type of ['food', 'drink']">
+
+        <h5 class="type-title" *ngIf="type === 'food'">Food:</h5>
+        <h5 class="type-title" *ngIf="type === 'drink'">Drink:</h5>
+
+        <ul class="list-group">
+            
+            <div *ngFor="let dish of menu">
+
+                <div class="list-group-item list-group-item-action" *ngIf="dish.type === type">
+                
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{dish.name}}</h5>
+                        
+                        <small>{{dish.price}}€</small>
+                    </div>
+                    <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">Ingredients: {{ingredients_to_string(dish)}}</p>
+                    
+                    <span class="bi bi-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteDishModal" (click)="set_curr_dish(dish.name)"></span>
+                    </div>
+
+                </div>
+                
+            </div>
+        </ul>
+    </div>
+
+    <div class="col text-center">
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal">Add dish</button>
+    </div>
+
+    <!-- Modal Add New Dish -->
+    <div class="modal fade" id="addDishModal" tabindex="-1" aria-labelledby="addDishModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add a new dish</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">      
+                
+                    <form>
+                      
+                      <div class="form-group">
+                        <label for="inputName">Name</label>
+                        <input type="text" #name required name="name" class="form-control" id="inputName" placeholder="Enter name">
+                      </div>                
+
+                      <div class="form-outline">
+                        <label for="inputPrice">Price</label>
+                        <input min="0" type="number" step="0.01" #price name="price" id="inputPrice" class="form-control" placeholder="Enter price"/>
+                      </div>
+
+                      <div class="form-outline ingredients-input">
+                        <label for="inputIngredients">Ingredients</label>
+                        <input type="text" #ingredients name="ingredients" id="inputIngredients" class="form-control" placeholder="Enter ingredients (separated by comma)"/>
+                      </div>
+
+                      <div class="form-group">
+                      <label for="inputType">Type</label>
+                      <select #type class="form-select" aria-label="Choose a type">
+                        <option value="food">Food</option>
+                        <option value="drink">Drink</option>
+                      </select>
+                      </div>
+                    
+                      <div *ngIf="errmessage" class="alert alert-danger" role="alert">
+                        Signup error: {{errmessage}}
+                      </div>
+                    
+                      <button type="submit" class="btn btn-lg btn-primary btn-block" [disabled]=" !name || !price || !type " (click)="add_dish({
+                        'name': name.value,
+                        'price': +price.value,
+                        'type': type.value,
+                        'ingredients': string_to_ingredients(ingredients.value)
+                      })">Add</button>
+                    </form>
+
+            </div>
+
+        </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Dish -->
+    <div class="modal fade" id="deleteDishModal" tabindex="-1" aria-labelledby="deleteDishModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to delete {{get_curr_dish()}}?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger" (click)="delete_dish(get_curr_dish())">Delete</button>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+</div>

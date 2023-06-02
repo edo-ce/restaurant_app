@@ -163,30 +163,30 @@ app.route("/dishes").get(auth, (req, res, next) => {
 });
 
 // get or delete a dish from the menu
-app.route("/dishes/:id").get(auth, (req, res, next) => {
-    dish.getModel().findOne({_id: new mongoose.Types.ObjectId(req.params.id)}, {}).then(
+app.route("/dishes/:name").get(auth, (req, res, next) => {
+    dish.getModel().findOne({name: req.params.name}, {}).then(
         (dish) => {
             if (dish)
                 return res.status(200).json(dish);
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid dish ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid dish name"} );
         }
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 }).delete(auth, checkAdminRole, (req, res, next) => {
-    dish.getModel().deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)}).then(
+    dish.getModel().deleteOne({name: req.params.name}).then(
         (query) => {
             if (query.deletedCount > 0)
                 return res.status(200).json( {error:false, errormessage:""} );
             else
-                return res.status(404).json( {error:true, errormessage:"Invalid dish ID"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid dish name"} );
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
 }).post(auth, checkAdminRole, (req, res, next) => {
-    dish.getModel().updateOne({_id: new mongoose.Types.ObjectId(req.params.id)}, req.body).then(
+    dish.getModel().updateOne({name: req.params.name}, req.body).then(
         (updated) => {
             if (updated.acknowledged)
                 return res.status(200).json(updated);

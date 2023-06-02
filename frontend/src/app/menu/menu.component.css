@@ -1,0 +1,29 @@
+.container {
+    align-items: center;
+    height: 100%;
+    width: 80%;
+}
+
+.title {
+    margin: 20px;
+}
+
+.add-button {
+    margin: 20px;
+}
+
+.trash-icon:hover {
+    cursor: pointer;
+}
+
+.type-title {
+    margin: 20px;
+}
+
+.form-group {
+    margin: 20px 0px;
+}
+
+.ingredients-input {
+    margin-top: 20px;
+}
