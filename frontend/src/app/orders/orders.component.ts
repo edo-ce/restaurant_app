@@ -18,6 +18,7 @@ export class OrdersComponent implements OnInit {
   public orders: Order[] = [];
   public total_price: number = -1;
   public table_seats: number = 0;
+  errmessage = undefined;
 
   constructor(private route: ActivatedRoute, private os: OrdersHttpService, private ts: TableHttpService, private router: Router) { }
 
@@ -69,5 +70,9 @@ export class OrdersComponent implements OnInit {
     error: (error) => {
       console.log('Error occurred while posting: ' + error);
     }});
+  }
+
+  public new_order(): void {
+    this.router.navigate(["order/table/" + this.parameter]);
   }
 }

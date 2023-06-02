@@ -19,7 +19,8 @@ const routes: Routes = [
   ]},
   {path: "staff", component: StaffComponent},
   {path: "menu", component: MenuComponent},
-  {path: "orders/:model/:parameter", component: OrdersComponent}
+  {path: "orders/:model/:parameter", component: OrdersComponent},
+  {path: "order/table/:number", component: MenuComponent}
 ];
 
 @NgModule({

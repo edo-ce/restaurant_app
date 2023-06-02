@@ -1,7 +1,8 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <h1 class="title text-center">Menu</h1>
+    <h1 class="title text-center" *ngIf="!table_number">Menu</h1>
+    <h1 class="title text-center" *ngIf="table_number">New Order</h1>
 
     <div *ngFor="let type of ['food', 'drink']">
 
@@ -22,7 +23,10 @@
                     <div class="d-flex w-100 justify-content-between">
                     <p class="mb-1">Ingredients: {{ingredients_to_string(dish)}}</p>
                     
-                    <span class="bi bi-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteDishModal" (click)="set_curr_dish(dish.name)"></span>
+                    <span class="bi bi-trash right-icon" data-bs-toggle="modal" data-bs-target="#deleteDishModal" *ngIf="!table_number" (click)="set_curr_dish(dish.name)"></span>
+                    <div class="right-icon" *ngIf="table_number">
+                      <i class="bi bi-plus-lg plus"></i><i class="bi bi-dash-lg"></i>
+                    </div>
                     </div>
 
                 </div>

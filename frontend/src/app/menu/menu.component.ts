@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Dish } from '../model/Dish';
 import { DishHttpService } from '../dish-http.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -11,12 +12,15 @@ export class MenuComponent implements OnInit {
 
   public menu: Dish[] = [];
   private curr_dish: string = "";
+  public table_number: any = undefined;
   errmessage = undefined;
 
-  constructor(private ds: DishHttpService) { }
+  constructor(private ds: DishHttpService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.get_menu();  
+    this.get_menu();
+    if (this.route.snapshot.paramMap.get('number'))
+      this.table_number = this.route.snapshot.paramMap.get('number');
   }
 
   private get_menu(): void {

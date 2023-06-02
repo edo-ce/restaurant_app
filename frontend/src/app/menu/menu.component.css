@@ -12,7 +12,7 @@
     margin: 20px;
 }
 
-.trash-icon:hover {
+.right-icon:hover {
     cursor: pointer;
 }
 
@@ -26,4 +26,8 @@
 
 .ingredients-input {
     margin-top: 20px;
+}
+
+.plus {
+    margin-right: 1px;
 }
