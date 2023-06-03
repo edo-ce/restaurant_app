@@ -30,6 +30,12 @@ export class OrdersHttpService {
     );
   }
 
+  delete_order(id: any): Observable<Order> {
+    return this.http.delete<Order>(this.us.url + '/orders/' + id, this.us.create_options()).pipe(
+      catchError(this.us.handleError)
+    );
+  }
+
   compute_price(orders: Order[], table_seats: number): number {
     if (orders.length === 0)
       return 0;

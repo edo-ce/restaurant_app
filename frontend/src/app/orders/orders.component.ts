@@ -65,7 +65,17 @@ export class OrdersComponent implements OnInit {
       next: (table) => {
       console.log('Table status changed');
       // TODO: remove all the orders of the table
-      this.router.navigate(["dashboard"]);
+      this.orders.forEach((order: Order) => {
+        this.delete_order(order._id);
+      });
+      this.ts.set_table(this.parameter, {"seats_occupied": 0}).subscribe( {
+        next: () => {
+        console.log('Table number of seats occupied is 0');
+        this.router.navigate(["dashboard"]);
+      },
+      error: (error) => {
+        console.log('Error occurred while posting: ' + error);
+      }});
     },
     error: (error) => {
       console.log('Error occurred while posting: ' + error);
@@ -74,5 +84,18 @@ export class OrdersComponent implements OnInit {
 
   public new_order(): void {
     this.router.navigate(["order/table/" + this.parameter]);
+  }
+
+  public delete_order(id: any): void {
+    this.os.delete_order(id).subscribe({
+      next: () => {
+        console.log("Order " + id + " deleted");
+        this.errmessage = undefined;
+      },
+      error: (error) => {
+        console.log('Delete error: ' + JSON.stringify(error.error.errormessage) );
+        this.errmessage = error.error.errormessage || error.error.message;
+      }
+    })
   }
 }
