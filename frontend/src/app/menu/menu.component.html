@@ -1,8 +1,8 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <h1 class="title text-center" *ngIf="!table_number">Menu</h1>
-    <h1 class="title text-center" *ngIf="table_number">New Order</h1>
+    <h1 class="title text-center" *ngIf="!table">Menu</h1>
+    <h1 class="title text-center" *ngIf="table">New Order</h1>
 
     <div *ngFor="let type of ['food', 'drink']">
 
@@ -11,21 +11,23 @@
 
         <ul class="list-group">
             
-            <div *ngFor="let dish of menu">
+            <div *ngFor="let dish_pair of menu">
 
-                <div class="list-group-item list-group-item-action" *ngIf="dish.type === type">
+                <div class="list-group-item list-group-item-action" *ngIf="dish_pair[0].type === type">
                 
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{dish.name}}</h5>
+                        <h5 class="mb-1">{{dish_pair[0].name}}</h5>
                         
-                        <small>{{dish.price}}€</small>
+                        <small *ngIf="!table">{{dish_pair[0].price}}€</small>
+                        <small *ngIf="table">Amount: {{dish_pair[1]}}</small>
                     </div>
                     <div class="d-flex w-100 justify-content-between">
-                    <p class="mb-1">Ingredients: {{ingredients_to_string(dish)}}</p>
+                    <p class="mb-1">Ingredients: {{ingredients_to_string(dish_pair[0])}}</p>
                     
-                    <span class="bi bi-trash right-icon" data-bs-toggle="modal" data-bs-target="#deleteDishModal" *ngIf="!table_number" (click)="set_curr_dish(dish.name)"></span>
-                    <div class="right-icon" *ngIf="table_number">
-                      <i class="bi bi-plus-lg plus"></i><i class="bi bi-dash-lg"></i>
+                    <span class="bi bi-trash right-icon" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="!table" (click)="set_curr_dish(dish_pair[0].name)"></span>
+                    <div class="right-icon" *ngIf="table">
+                      <i class="bi bi-plus-lg amount-icon" (click)="change_amount('plus', dish_pair[0].name)"></i>
+                      <i class="bi bi-dash-lg amount-icon" (click)="change_amount('minus', dish_pair[0].name)"></i>
                     </div>
                     </div>
 
@@ -35,8 +37,16 @@
         </ul>
     </div>
 
+    <form>
+      <div class="form-outline" *ngIf="table && table.seats_occupied === 0">
+        <label class="input-seats" for="inputSeats">Number of people:</label>
+        <input min="1" max="{{table.seats_capacity}}" type="number" #seats_number name="seats" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
+      </div>
+    </form>
+
     <div class="col text-center">
-        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal">Add dish</button>
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal" *ngIf="!table">Add dish</button>
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="table">Make order</button>
     </div>
 
     <!-- Modal Add New Dish -->
@@ -93,20 +103,22 @@
     </div>
 
     <!-- Modal Delete Dish -->
-    <div class="modal fade" id="deleteDishModal" tabindex="-1" aria-labelledby="deleteDishModal" aria-hidden="true">
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-        <form action="">
+        <form>
         <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Are you sure you want to delete {{get_curr_dish()}}?
+            <p *ngIf="!table">Are you sure you want to delete {{get_curr_dish()}}?</p>
+            <p *ngIf="table">Are you sure you want to make the order?</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-danger" (click)="delete_dish(get_curr_dish())">Delete</button>
+            <button type="submit" class="btn btn-danger" *ngIf="!table" (click)="delete_dish(get_curr_dish())">Delete</button>
+            <button type="button" class="btn btn-success" *ngIf="table" data-bs-dismiss="modal" (click)="new_order()">Confirm</button>
         </div>
         </form>
         </div>

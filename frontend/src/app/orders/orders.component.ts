@@ -37,7 +37,7 @@ export class OrdersComponent implements OnInit {
   private get_orders(): void {
     this.os.get_orders(this.model, this.parameter).subscribe({
       next: (orders) => {
-        this.orders = orders.sort((a, b) => a.time.getTime() - b.time.getTime());
+        this.orders = orders;
       },
       error: (error) => {
         console.log('Error occured while getting: ' + error);

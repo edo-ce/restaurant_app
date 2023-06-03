@@ -24,6 +24,12 @@ export class OrdersHttpService {
     );
   }
 
+  post_order(data: Object): Observable<Order> {
+    return this.http.post<Order>(this.us.url + '/orders', data, this.us.create_options()).pipe(
+      catchError(this.us.handleError)
+    );
+  }
+
   compute_price(orders: Order[], table_seats: number): number {
     if (orders.length === 0)
       return 0;
