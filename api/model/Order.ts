@@ -9,10 +9,12 @@ export interface Order extends mongoose.Document {
     status: string,
     creator_username: string,
     table_number: number,
+    type: string,
     dishes: [Dish, number][]
 }
 
-const STATUS_ENUM: string[] = ["todo", "progress", "done"];
+const STATUS_ENUM: string[] = ["todo", "in progress", "to serve", "done"];
+const TYPE_ENUM: string[] = ["food", "drink"];
 
 const orderSchema = new mongoose.Schema<Order>({
     time: {
@@ -33,6 +35,11 @@ const orderSchema = new mongoose.Schema<Order>({
     table_number: {
         type: mongoose.Schema.Types.Number,
         required: true
+    },
+    type: {
+        type: mongoose.Schema.Types.String,
+        required: true,
+        enum: TYPE_ENUM
     },
     dishes: {
         type: [[mongoose.Schema.Types.Mixed, mongoose.SchemaTypes.Number]],
@@ -65,5 +72,6 @@ export function isOrder(data): data is Order {
     (!data.status || STATUS_ENUM.includes(data.status)) && 
     data.creator_username && typeof(data.creator_username) === "string" && 
     data.table_number && typeof(data.table_number) === "number" && 
+    data.type && TYPE_ENUM.includes(data.type) && 
     data.dishes.every((dish_pair) => isDish(dish_pair[0]) && typeof(dish_pair[1]) === "number");
 }

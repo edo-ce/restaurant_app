@@ -31,6 +31,12 @@
     margin: 20px;
 }
 
+.input-seats {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
+
 @media (max-width: 992px) {
   .col-md-3 {
     flex-basis: 50%;

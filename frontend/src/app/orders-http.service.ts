@@ -18,7 +18,7 @@ export class OrdersHttpService {
   get_orders(model: string, parameter: any): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.us.url}/${model}/${parameter}/orders`, this.us.create_options({})).pipe(
       tap( (data) => {
-        
+        // console.log(JSON.stringify(data));
       }),
       catchError(this.us.handleError)
     );
@@ -34,6 +34,12 @@ export class OrdersHttpService {
     return this.http.delete<Order>(this.us.url + '/orders/' + id, this.us.create_options()).pipe(
       catchError(this.us.handleError)
     );
+  }
+
+  set_order(id: any, data: Object): Observable<Order> {
+    return this.http.post<Order>(this.us.url + '/orders/' + id, data, this.us.create_options({})).pipe(
+      catchError(this.us.handleError)
+    )
   }
 
   compute_price(orders: Order[], table_seats: number): number {

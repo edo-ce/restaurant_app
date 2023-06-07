@@ -37,13 +37,6 @@
         </ul>
     </div>
 
-    <form>
-      <div class="form-outline" *ngIf="table && table.seats_occupied === 0">
-        <label class="input-seats" for="inputSeats">Number of people:</label>
-        <input min="1" max="{{table.seats_capacity}}" type="number" #seats_number name="seats" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
-      </div>
-    </form>
-
     <div class="col text-center">
         <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal" *ngIf="!table">Add dish</button>
         <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="table">Make order</button>

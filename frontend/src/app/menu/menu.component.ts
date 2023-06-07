@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Dish } from '../model/Dish';
+import { Order } from '../model/Order';
 import { DishHttpService } from '../dish-http.service';
 import { ActivatedRoute } from '@angular/router';
 import { TableHttpService } from '../table-http.service';
@@ -17,11 +18,13 @@ export class MenuComponent implements OnInit {
   public menu: any = [];
   private curr_dish: string = "";
   public table: any = undefined;
-  public seats_occupied = undefined;
   errmessage = undefined;
 
   constructor(private ds: DishHttpService, private ts: TableHttpService, private us: UserHttpService, 
     private os: OrdersHttpService, private route: ActivatedRoute, private router: Router) { }
+
+  @Output() posted_order = new EventEmitter<Order>();
+  @Output() posted_dish = new EventEmitter<Dish>();
 
   ngOnInit(): void {
     this.get_menu();
@@ -79,6 +82,8 @@ export class MenuComponent implements OnInit {
   }
 
   public add_dish(data: Dish): void {
+    if (data.price < 0)
+      return;
     this.ds.post_dish(data).subscribe({
       next: (dish) => {
         console.log('Dish added:' + JSON.stringify(dish));
@@ -104,43 +109,61 @@ export class MenuComponent implements OnInit {
     })
   }
 
-  public new_order(seats_added = null): void {
-    // add the number of people if it is the first order
-    if (this.table.seats_occupied === 0) {
-      this.ts.set_table(this.table.number, {"seats_occupied": seats_added}).subscribe( {
-        next: () => {
-        console.log('Table seats occupied added');
-      },
-      error: (error) => {
-        console.log('Error occurred while posting: ' + error);
-      }});
-    }
-
-    let dishes: any = [];
+  public new_order(): void {
+    let food_dishes: any = [];
+    let drink_dishes: any = [];
     this.menu.forEach((dish_pair: any) => {
-      if (dish_pair[1] > 0)
-        dishes.push(dish_pair);
+      if (dish_pair[1] > 0) {
+        if (dish_pair[0].type === 'food')
+          food_dishes.push(dish_pair);
+        else
+          drink_dishes.push(dish_pair);
+      }
     })
  
-    let data = {
+    let food_data = {
       "creator_username": this.us.get_username(),
       "table_number": this.table.number,
-      "dishes": dishes
+      "type": "food",
+      "dishes": food_dishes
     }
 
-    if (data.dishes.length > 0) {
-      this.os.post_order(data).subscribe({
-        next: (order) => {
-          console.log('Order added:' + JSON.stringify(order));
-          this.errmessage = undefined;
-          this.router.navigate(["orders/table/" + this.table.number]);
-        },
-        error: (error) => {
-          console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
-          this.errmessage = error.error.errormessage || error.error.message;
-      }});
-    } else {
-      this.router.navigate(["orders/table/" + this.table.number]);
+    let drink_data = {
+      "creator_username": this.us.get_username(),
+      "table_number": this.table.number,
+      "type": "drink",
+      "dishes": drink_dishes
     }
+
+    if (food_dishes.length > 0 && drink_dishes.length > 0)
+      this.add_order(food_data, drink_data);
+    else if (food_dishes.length > 0)
+      this.add_order(food_data);
+    else if (drink_dishes.length > 0)
+      this.add_order(drink_data);
+    else
+      this.router.navigate(["orders/table/" + this.table.number]);
+  }
+
+  private add_order(data1: Object, data2: any = null): void {
+    this.os.post_order(data1).subscribe({
+      next: (order) => {
+        this.errmessage = undefined;
+        this.posted_order.emit(order);
+        if (data2) {
+          this.os.post_order(data2).subscribe({
+            next: (order) => {
+              this.posted_order.emit(order);
+              this.router.navigate(["orders/table/" + this.table.number]);
+            }
+          });
+        } else {
+          this.router.navigate(["orders/table/" + this.table.number]);
+        }
+      },
+      error: (error) => {
+        console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
+        this.errmessage = error.error.errormessage || error.error.message;
+    }});
   }
 }

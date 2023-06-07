@@ -6,5 +6,6 @@ export interface Order {
     status: string,
     creator_username: string,
     table_number: number,
+    type: string,
     dishes: [Dish, number][]
 }

@@ -9,3 +9,37 @@
 .bottom-area {
     margin: 20px;
 }
+
+.status-todo {
+    color: red;
+}
+
+.status-progress {
+    color:blue;
+}
+
+.status-serve {
+    color: green;
+}
+
+.status-done {
+    color: grey;
+}
+
+.status-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.changeable:hover {
+    cursor: pointer;
+}
+
+.form-group {
+    margin: 20px 0px;
+}
+
+.type-title {
+    margin: 20px;
+}

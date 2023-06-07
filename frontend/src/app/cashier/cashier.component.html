@@ -26,22 +26,35 @@
   <div class="modal fade" id="tableOptions" tabindex="-1" aria-labelledby="tableOptions" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form>
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Table {{get_curr_table().number}}</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <form>
           Seats capacity: {{get_curr_table().seats_capacity}} 
           <br>
           <p *ngIf="get_curr_table().occupied">Seats occupied: {{get_curr_table().seats_occupied}}</p>
+          <div class="form-outline" *ngIf="!get_curr_table().occupied">
+            <label class="input-seats" for="inputSeats">Number of people:</label>
+            <input type="number" #seats_number min="1" max="{{get_curr_table().seats_capacity}}" required name="seats_number" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
+          </div>
+
+          <!-- TODO: add seats_occupied-->
+          <!-- TODO: add seats_occupied-->
+          <!-- TODO: add seats_occupied-->
+          <!-- TODO: add seats_occupied-->
+          <!-- TODO: add seats_occupied-->
+        
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
+            <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true})">Occupy</button>
+          </div>
+          </form>
+
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
-          <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="change_table_state(true)">Occupy</button>
-        </div>
-      </form>
+
       </div>
     </div>
   </div>

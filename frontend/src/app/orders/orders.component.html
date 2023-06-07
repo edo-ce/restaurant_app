@@ -3,24 +3,43 @@
 <div class="container">
     <h1 class="title text-center">Table {{get_parameter()}} Orders History</h1>
 
-    <ul class="list-group">
-        <div class="list-group-item list-group-item-action" *ngFor="let order of orders">
-            
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{order.time | date: 'shortTime'}}</h5>
-                <small>{{order.creator_username}}</small>
-            </div>
-            
-            <ul>
-                <div *ngFor="let dish_pair of order.dishes">
-                    <li>
-                        <p class="mb-1">{{dish_pair[0].name}} x{{dish_pair[1]}}</p>
-                    </li>
+    <div *ngFor="let type of ['food', 'drink']">
+        <div *ngIf="get_role() === 'cashier' || (get_role() === 'cook' && type === 'food') || (get_role() === 'bartender' && type === 'drink')">
+
+            <h5 class="type-title" *ngIf="type === 'food'">Food:</h5>
+            <h5 class="type-title" *ngIf="type === 'drink'">Drink:</h5>
+
+            <ul class="list-group">
+                <div *ngFor="let order of orders">
+                <div class="list-group-item list-group-item-action" *ngIf="order.type === type">
+                    
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{order.time | date: 'shortTime'}}</h5>
+                        <small>{{order.creator_username}}</small>
+                    </div>
+                    
+                    <div class="d-flex w-100 justify-content-between">
+                        <ul >
+                            <div *ngFor="let dish_pair of order.dishes">
+                                <li>
+                                    <p class="mb-1">{{dish_pair[0].name}} x{{dish_pair[1]}}</p>
+                                </li>
+                            </div>
+                        </ul>
+                        <h6 [class]="'status-title status-'+status_class[order.status]" *ngIf="get_role() === ('cook' || 'bartender')">
+                            {{order.status}}
+                        </h6>
+                        <h6 [class]="'status-title changeable status-'+status_class[order.status]" *ngIf="get_role() === 'cashier'" 
+                            data-bs-toggle="modal" data-bs-target="#statusModal" (click)="set_curr_order(order)">
+                            {{order.status}}
+                        </h6>
+                    </div>
+                    
+                </div>
                 </div>
             </ul>
-            
         </div>
-    </ul>
+    </div>
 
     <div class="bottom-area">
         <h5>People: {{table_seats}}</h5>
@@ -28,11 +47,11 @@
 
     <div class="col text-center">
         <button type="submit" class="btn btn-primary btn-lg bottom-button" (click)="new_order()">Order</button>
-        <button type="submit" class="btn btn-success btn-lg bottom-button" data-bs-toggle="modal" data-bs-target="#payout" (click)="get_price()">Payout</button>
+        <button type="submit" class="btn btn-success btn-lg bottom-button" data-bs-toggle="modal" data-bs-target="#payoutModal" (click)="get_price()">Payout</button>
     </div>
 
     <!-- Modal Delete User -->
-    <div class="modal fade" id="payout" tabindex="-1" aria-labelledby="payout" aria-hidden="true">
+    <div class="modal fade" id="payoutModal" tabindex="-1" aria-labelledby="payoutModal" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
             <form>
@@ -48,6 +67,40 @@
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="free_table()">Pay</button>
                 </div>
             </form>
+        </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add a new dish</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">      
+                
+                    <form>       
+                      <div class="form-group">
+                      <label for="inputStatus">Status</label>
+                      <select #status class="form-select" aria-label="Change status">
+                        <option value="todo">Todo</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="to serve">To Serve</option>
+                        <option value="done">Done</option>
+                      </select>
+                      </div>
+                    
+                      <div *ngIf="errmessage" class="alert alert-danger" role="alert">
+                        Signup error: {{errmessage}}
+                      </div>
+                    
+                      <button type="submit" class="btn btn-lg btn-primary btn-block" [disabled]="!status" (click)="update_order({'status': status.value})">Change</button>
+                    </form>
+
+            </div>
+
         </div>
         </div>
     </div>

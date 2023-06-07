@@ -10,6 +10,7 @@ import { UserHttpService } from './user-http.service';
 import { TableHttpService } from './table-http.service';
 import { OrdersHttpService } from './orders-http.service';
 import { DishHttpService } from './dish-http.service';
+import { SocketioService } from './socketio.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CashierComponent } from './cashier/cashier.component';
 import { WaiterComponent } from './waiter/waiter.component';
@@ -44,7 +45,8 @@ import { MenuComponent } from './menu/menu.component';
     {provide: UserHttpService, useClass: UserHttpService },
     {provide: TableHttpService, useClass: TableHttpService },
     {provide: OrdersHttpService, useClass: OrdersHttpService },
-    {provide: DishHttpService, useClass: DishHttpService }
+    {provide: DishHttpService, useClass: DishHttpService },
+    {provide: SocketioService, useClass: SocketioService }
   ],
   bootstrap: [AppComponent]
 })

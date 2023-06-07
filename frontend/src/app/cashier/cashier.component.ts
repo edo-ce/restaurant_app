@@ -35,8 +35,8 @@ export class CashierComponent implements OnInit {
     return this.tables.length;
   }
 
-  public change_table_state(occupied: boolean): void {
-    this.ts.set_table(this.curr_table.number, {"occupied": occupied}).subscribe( {
+  public update_table(data: Object): void {
+    this.ts.set_table(this.curr_table.number, data).subscribe( {
       next: () => {
       console.log('Table status changed');
     },
