@@ -12,10 +12,7 @@ import { OrdersHttpService } from './orders-http.service';
 import { DishHttpService } from './dish-http.service';
 import { SocketioService } from './socketio.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { CashierComponent } from './cashier/cashier.component';
-import { WaiterComponent } from './waiter/waiter.component';
-import { CookComponent } from './cook/cook.component';
-import { BartenderComponent } from './bartender/bartender.component';
+import { TablesComponent } from './tables/tables.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
@@ -27,10 +24,7 @@ import { MenuComponent } from './menu/menu.component';
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    CashierComponent,
-    WaiterComponent,
-    CookComponent,
-    BartenderComponent,
+    TablesComponent,
     NavbarComponent,
     StaffComponent,
     OrdersComponent,

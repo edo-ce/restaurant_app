@@ -4,11 +4,11 @@ import { TableHttpService } from '../table-http.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-cashier',
-  templateUrl: './cashier.component.html',
-  styleUrls: ['./cashier.component.css']
+  selector: 'app-tables',
+  templateUrl: './tables.component.html',
+  styleUrls: ['./tables.component.css']
 })
-export class CashierComponent implements OnInit {
+export class TablesComponent implements OnInit {
 
   public tables: Table[] = [];
   public cols_number: number[] = [0, 1, 2, 3];

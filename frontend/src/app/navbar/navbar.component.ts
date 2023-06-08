@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserHttpService } from '../user-http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,7 @@ export class NavbarComponent implements OnInit {
   private role: string = "";
   private curr_route: string = "dashboard";
 
-  constructor(private us: UserHttpService) {}
+  constructor(private us: UserHttpService, private router: Router) {}
 
   ngOnInit(): void {
       this.role = this.us.get_role();
@@ -27,5 +28,10 @@ export class NavbarComponent implements OnInit {
 
   check_route(route: string): boolean {
     return this.curr_route === route;
+  }
+
+  logout() {
+    this.us.logout();
+    this.router.navigate(['/']);
   }
 }

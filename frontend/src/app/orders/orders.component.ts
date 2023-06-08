@@ -25,23 +25,16 @@ export class OrdersComponent implements OnInit {
   public status_class: any = {'todo': 'todo', 'in progress': 'progress', 'to serve': 'serve', 'done': 'done'};
   private static STATUS_ENUM: any = {"to serve": 0, "in progress": 1, "todo": 2, "done": 3};
 
-  constructor(private route: ActivatedRoute, private sio: SocketioService, private os: OrdersHttpService, private ts: TableHttpService, 
+  constructor(private sio: SocketioService, private route: ActivatedRoute, private os: OrdersHttpService, private ts: TableHttpService, 
     private router: Router, private us: UserHttpService) { }
 
   ngOnInit(): void {
     this.model = this.route.snapshot.paramMap.get('model');
     this.parameter = this.route.snapshot.paramMap.get('parameter');
-    /*
-    this.sio.connect().subscribe({
-      next: (data) => {
-        this.get_orders();
-      },
-      error: (err) => {
-        console.log(err);
-      }
+    this.sio.connect().subscribe((o) => {
+      this.get_orders();
     });
-    */
-    this.get_orders(); // TODO: remove
+    console.log("ORDERS RETRIEVED: " + JSON.stringify(this.orders));
     if (this.model === "table")
       this.get_table_seats();
   }
@@ -63,6 +56,7 @@ export class OrdersComponent implements OnInit {
   }
 
   private get_orders(): void {
+    console.log("ENTERED");
     this.os.get_orders(this.model, this.parameter).subscribe({
       next: (orders) => {
         // TODO: to test the sorting efficacy

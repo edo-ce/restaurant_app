@@ -1,14 +1,14 @@
 <div [ngSwitch]="get_role()">
     <span *ngSwitchCase="'cashier'">
-        <app-cashier></app-cashier>
+        <app-tables></app-tables>
     </span> 
     <span *ngSwitchCase="'waiter'">
-        <app-waiter></app-waiter>
+        <app-tables></app-tables>
     </span> 
     <span *ngSwitchCase="'cook'">
-        <app-cook></app-cook>
+        
     </span> 
     <span *ngSwitchDefault>
-        <app-bartender></app-bartender>
+        
     </span>
 </div>
