@@ -31,10 +31,13 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.model = this.route.snapshot.paramMap.get('model');
     this.parameter = this.route.snapshot.paramMap.get('parameter');
+    /*
     this.sio.connect().subscribe((o) => {
       this.get_orders();
     });
     console.log("ORDERS RETRIEVED: " + JSON.stringify(this.orders));
+    */
+    this.get_orders();
     if (this.model === "table")
       this.get_table_seats();
   }

@@ -4,7 +4,7 @@
     <h1 class="title text-center">Table {{get_parameter()}} Orders History</h1>
 
     <div *ngFor="let type of ['food', 'drink']">
-        <div *ngIf="get_role() === 'cashier' || (get_role() === 'cook' && type === 'food') || (get_role() === 'bartender' && type === 'drink')">
+        <div *ngIf="get_role() === ('cashier' || 'waiter') || (get_role() === 'cook' && type === 'food') || (get_role() === 'bartender' && type === 'drink')">
 
             <h5 class="type-title" *ngIf="type === 'food'">Food:</h5>
             <h5 class="type-title" *ngIf="type === 'drink'">Drink:</h5>
@@ -26,10 +26,10 @@
                                 </li>
                             </div>
                         </ul>
-                        <h6 [class]="'status-title status-'+status_class[order.status]" *ngIf="get_role() === ('cook' || 'bartender')">
+                        <h6 [class]="'status-title status-'+status_class[order.status]" *ngIf="get_role() === 'cashier'">
                             {{order.status}}
                         </h6>
-                        <h6 [class]="'status-title changeable status-'+status_class[order.status]" *ngIf="get_role() === 'cashier'" 
+                        <h6 [class]="'status-title changeable status-'+status_class[order.status]" *ngIf="get_role() === ('cook' || 'bartender')"
                             data-bs-toggle="modal" data-bs-target="#statusModal" (click)="set_curr_order(order)">
                             {{order.status}}
                         </h6>
@@ -45,7 +45,7 @@
         <h5>People: {{table_seats}}</h5>
     </div>
 
-    <div class="col text-center">
+    <div class="col text-center" *ngIf="get_role() === 'cashier'">
         <button type="submit" class="btn btn-primary btn-lg bottom-button" (click)="new_order()">Order</button>
         <button type="submit" class="btn btn-success btn-lg bottom-button" data-bs-toggle="modal" data-bs-target="#payoutModal" (click)="get_price()">Payout</button>
     </div>
