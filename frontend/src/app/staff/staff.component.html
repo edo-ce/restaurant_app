@@ -9,7 +9,7 @@
             
                 <div class="d-flex w-100 justify-content-between">
                     <a class="user-link" href="#">
-                      <h5 class="mb-1">{{user.username}}</h5>
+                      <h5 class="mb-1" (click)="open_statistics(user.username)">{{user.username}}</h5>
                     </a>
                     <small>{{user.role}}</small>
                 </div>

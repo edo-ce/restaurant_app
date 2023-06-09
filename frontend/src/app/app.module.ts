@@ -10,6 +10,7 @@ import { UserHttpService } from './user-http.service';
 import { TableHttpService } from './table-http.service';
 import { OrdersHttpService } from './orders-http.service';
 import { DishHttpService } from './dish-http.service';
+import { StatisticsHttpService } from './statistics-http.service';
 import { SocketioService } from './socketio.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TablesComponent } from './tables/tables.component';
@@ -17,6 +18,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MenuComponent } from './menu/menu.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { MenuComponent } from './menu/menu.component';
     NavbarComponent,
     StaffComponent,
     OrdersComponent,
-    MenuComponent
+    MenuComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +43,7 @@ import { MenuComponent } from './menu/menu.component';
     {provide: TableHttpService, useClass: TableHttpService },
     {provide: OrdersHttpService, useClass: OrdersHttpService },
     {provide: DishHttpService, useClass: DishHttpService },
+    {provide: StatisticsHttpService, useClass: StatisticsHttpService },
     {provide: SocketioService, useClass: SocketioService }
   ],
   bootstrap: [AppComponent]

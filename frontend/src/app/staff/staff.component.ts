@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../model/User';
 import { UserHttpService } from '../user-http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-staff',
@@ -13,7 +14,7 @@ export class StaffComponent implements OnInit {
   private curr_user: string = '';
   errmessage = undefined;
 
-  constructor(private us: UserHttpService) {}
+  constructor(private us: UserHttpService, private router: Router) {}
 
   ngOnInit(): void {
       this.get_users();
@@ -65,5 +66,9 @@ export class StaffComponent implements OnInit {
 
   public get_curr_user(): string {
     return this.curr_user;
+  }
+
+  public open_statistics(username: string): void {
+    this.router.navigate(["/statistics/"+username]);
   }
 }

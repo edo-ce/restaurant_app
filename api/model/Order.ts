@@ -1,7 +1,5 @@
 import mongoose = require('mongoose');
-import { User, isUser } from './User';
 import { Dish, isDish } from './Dish';
-import { Table, isTable } from './Table';
 
 export interface Order extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,

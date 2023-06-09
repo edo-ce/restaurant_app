@@ -6,6 +6,7 @@ import { TablesComponent } from './tables/tables.component';
 import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MenuComponent } from './menu/menu.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "/login", pathMatch: "full"},
@@ -17,7 +18,9 @@ const routes: Routes = [
   {path: "staff", component: StaffComponent},
   {path: "menu", component: MenuComponent},
   {path: "orders/:model/:parameter", component: OrdersComponent},
-  {path: "order/table/:number", component: MenuComponent}
+  {path: "order/table/:number", component: MenuComponent},
+  {path: "statistics/:username", component: StatisticsComponent},
+  {path: "statistics", component: StatisticsComponent}
 ];
 
 @NgModule({

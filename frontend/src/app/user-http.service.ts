@@ -125,6 +125,15 @@ export class UserHttpService {
     );
   }
 
+  get_user(username: string): Observable<User> {
+    return this.http.get<User>(this.url + '/users/' + username, this.create_options({})).pipe(
+      tap( (data) => {
+        console.log(JSON.stringify(data));
+      }),
+      catchError(this.handleError)
+    )
+  }
+
   post_user(data: User): Observable<User> {
     let new_user: any = data;
     new_user.password = '';

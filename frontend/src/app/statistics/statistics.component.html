@@ -1,0 +1,53 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+
+    <div *ngIf="user">
+        <h1 class="title text-center">{{user?.username}} statistics</h1>
+
+        <h5>Name and Surname: {{user?.name}} {{user?.surname}}</h5>
+        <h5>Role: {{user?.role}}</h5>
+        <h5>Number of Services: {{user_statistic?.num_services}}</h5>
+        <h5>Number of Orders: {{user_statistic?.num_orders}}</h5>
+
+        <div [ngSwitch]="user?.role">
+            <span *ngSwitchCase="'cashier'">
+                <h5>Tables_closed:</h5>
+                <ul *ngIf="user_statistic?.tables_closed.length > 0">
+                    <div *ngFor="let table_tern of user_statistic?.tables_closed">
+                        <li>Table number {{table_tern[0]}} x{{table_tern[1]}}, Total amount: {{table_tern[2]}}€</li>
+                    </div>
+                </ul>
+                <h5 *ngIf="user_statistic?.tables_closed.length === 0">0</h5>
+            </span> 
+            <span *ngSwitchCase="'waiter'">
+                <h5>Tables opened:</h5>
+                <ul *ngIf="user_statistic?.tables_opened.length > 0">
+                    <div *ngFor="let table_pair of user_statistic?.tables_opened">
+                        <li>Table number {{table_pair[0]}} x{{table_pair[1]}}</li>
+                    </div>
+                </ul>
+                <h5 *ngIf="user_statistic?.tables_opened.length === 0">0</h5>
+            </span> 
+            <span *ngSwitchDefault>
+                <h5>Dishes prepared:</h5>
+                <ul *ngIf="user_statistic?.dishes_prepared.length > 0">
+                    <div *ngFor="let dish_pair of user_statistic?.dishes_prepared">
+                        <li>{{dish_pair[0]}} x{{dish_pair[1]}}</li>
+                    </div>
+                </ul>
+                <h5 *ngIf="user_statistic?.dishes_prepared.length === 0">0</h5>
+            </span>
+        </div>
+    </div>
+
+    <div *ngIf="!user">
+        <h1 class="title text-center">Statistics</h1>
+
+        <h5>Number of staff members: {{statistics.length}}</h5>
+        <h5>Total revenue: {{compute_revenue()}}€</h5>
+        <h5>Number of tables served: {{compute_tables_served()}}</h5>
+        <h5>Number of orders made: {{compute_orders_made()}}</h5>
+    </div>
+
+</div>

@@ -3,6 +3,7 @@ import * as user from './model/User';
 import * as table from './model/Table';
 import * as dish from './model/Dish';
 import * as order from './model/Order';
+import * as statistic from './model/Statistic';
 
 import http = require('http');
 import https = require('https');
@@ -106,7 +107,15 @@ app.route("/users").get(auth, (req, res, next) => {
         let newUser = user.newUser(req.body);
         newUser.setPassword(password);
         newUser.save().then((user) => {
-            return res.status(200).json(user);
+            // create a new statistic for the new user
+            const rolesStatistics = {"cashier": "tables_closed", "cook": "dishes_prepared", "bartender": "dishes_prepared", "waiter": "tables_opened"};
+            statistic.getModel().create({"username": user.username, [rolesStatistics[req.body.role]]: []}).then((stat) => {
+                console.log("Statistic created: " + JSON.stringify(stat));
+                return res.status(200).json(user);
+            }).catch((reason) => {
+                return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+            });
+
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
         });
@@ -132,10 +141,18 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
 }).delete(auth, checkAdminRole, (req, res, next) => {
     user.getModel().deleteOne({username: req.params.username}).then(
         (query) => {
-            if (query.deletedCount > 0)
-                return res.status(200).json( {error:false, errormessage:""} );
-            else
+            if (query.deletedCount > 0) {
+                // delete the statistic for the deleted user
+                statistic.getModel().deleteOne({username: req.params.username}).then(
+                    (query) => {
+                        return res.status(200).json( {error:false, errormessage:""} );
+                    }
+                ).catch((reason) => {
+                    return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+                })
+            } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid username"} );
+            }
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -350,27 +367,40 @@ app.get("/user/:username/orders", auth, (req, res, next) => {
     })
 })
 
-// get general statistics about the restaurant
+// get all the statistics
 app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
-
-    // see the amount of money earned
-
-    // how much sells per dish
-
-    // when during the service there were more people
+    statistic.getModel().find({}).then((stats) => {
+        return res.status(200).json(stats);
+    }).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
 });
 
 // get specific statistics for a user
-app.get("/statistics/:username", auth, checkAdminRole, (req, res, next) => {
-
-    // see how much orders did he/she take
-
-    // how much money did he/she make
-
-    // how many days did he/she work
-
-    // how much did he/she cook/prepare drinks
-});
+app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) => {
+    statistic.getModel().findOne({username: req.params.username}, {}).then(
+        (stat) => {
+            if (stat)
+                return res.status(200).json(stat);
+            else
+                return res.status(404).json( {error:true, errormessage:"Invalid username"} );
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).post(auth, (req, res, next) => {
+    statistic.getModel().updateOne({username: req.params.username}, req.body).then(
+        (updated) => {
+            if (updated.acknowledged) {
+                return res.status(200).json(updated);
+            } else {
+                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+            }
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+    });
+});;
 
 
 // HTTP basic authentication strategy using passport middleware
@@ -445,6 +475,7 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
             });
             a.setAdmin();
             a.setPassword("admin");
+            statistic.getModel().create({"username": "admin", "tables_closed": []});
             return a.save();
         } else {
             console.log("Admin already exists");
@@ -497,10 +528,23 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
 ).then(
     (count) => {
         if (count === 0) {
-            // insert boostrap tables
+            // insert boostrap orders
             console.log("Adding orders");
             let orders = retrieveData(require('./util/orders.json'), order);
             return Promise.all(orders);
+        }
+    }
+).then(
+    () => {
+        return statistic.getModel().countDocuments({});
+    }
+).then(
+    (count) => {
+        if (count === 1) {
+            // insert boostrap statistics
+            console.log("Adding statistics");
+            let statistics = retrieveData(require('./util/statistics.json'), statistic);
+            return Promise.all(statistics);
         }
     }
 ).then(

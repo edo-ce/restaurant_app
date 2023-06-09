@@ -1,0 +1,32 @@
+[
+    {
+        "username": "user1",
+        "num_orders": 26,
+        "num_services": 4,
+        "tables_closed": [ [1, 2, 120], [3, 1, 40], [6, 1, 25] ]
+    },
+    {
+        "username": "user2",
+        "num_orders": 4,
+        "num_services": 4,
+        "dishes_prepared": [ ["Spaghetti allo Scoglio", 2], ["Pizza Margherita", 2] ]
+    },
+    {
+        "username": "user3",
+        "num_orders": 18,
+        "num_services": 4,
+        "dishes_prepared": [ ["Coca Cola", 2], ["Birra Media", 2] ]
+    },
+    {
+        "username": "user4",
+        "num_orders": 4,
+        "num_services": 2,
+        "tables_opened": [ [4, 2], [3, 1], [2, 1] ]
+    },
+    {
+        "username": "user5",
+        "num_orders": 4,
+        "num_services": 3,
+        "tables_opened": [ [1, 2], [3, 1], [6, 1] ]
+    }
+]
