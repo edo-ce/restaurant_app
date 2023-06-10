@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../model/User';
+import { User, isUser } from '../model/User';
 import { UserHttpService } from '../user-http.service';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,7 @@ export class StaffComponent implements OnInit {
 
   public users: User[] = [];
   private curr_user: string = '';
-  errmessage = undefined;
+  errmessage: any = undefined;
 
   constructor(private us: UserHttpService, private router: Router) {}
 
@@ -39,10 +39,13 @@ export class StaffComponent implements OnInit {
       next: (user) => {
         console.log('User added:' + JSON.stringify(user));
         this.errmessage = undefined;
+        window.location.reload();
       },
       error: (error) => {
-        console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
-        this.errmessage = error.error.errormessage || error.error.message;
+        if (!isUser(data))
+          this.errmessage = `You need to insert every information.`;
+        else
+          this.errmessage = `User ${data.username} already exists.`;
     }});
   }
 
@@ -54,8 +57,7 @@ export class StaffComponent implements OnInit {
         this.errmessage = undefined;
       },
       error: (error) => {
-        console.log('Delete error: ' + JSON.stringify(error.error.errormessage) );
-        this.errmessage = error.error.errormessage || error.error.message;
+        console.log('Delete error: ' + JSON.stringify(error) );
       }
     })
   }

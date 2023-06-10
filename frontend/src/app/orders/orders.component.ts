@@ -15,12 +15,11 @@ import { SocketioService } from '../socketio.service';
 })
 export class OrdersComponent implements OnInit {
 
-  private model: any;
-  private parameter: any;
+  private table_number: any;
   public orders: Order[] = [];
   private curr_order: any;
   public total_price: number = -1;
-  public table_seats: number = 0;
+  public table_seats: any = undefined;
   errmessage = undefined;
   public status_class: any = {'todo': 'todo', 'in progress': 'progress', 'to serve': 'serve', 'done': 'done'};
   private static STATUS_ENUM: any = {"to serve": 0, "in progress": 1, "todo": 2, "done": 3};
@@ -29,8 +28,7 @@ export class OrdersComponent implements OnInit {
     private router: Router, private us: UserHttpService) { }
 
   ngOnInit(): void {
-    this.model = this.route.snapshot.paramMap.get('model');
-    this.parameter = this.route.snapshot.paramMap.get('parameter');
+    this.table_number = this.route.snapshot.paramMap.get('number');
     /*
     this.sio.connect().subscribe((o) => {
       this.get_orders();
@@ -38,12 +36,11 @@ export class OrdersComponent implements OnInit {
     console.log("ORDERS RETRIEVED: " + JSON.stringify(this.orders));
     */
     this.get_orders();
-    if (this.model === "table")
-      this.get_table_seats();
+    this.get_table_seats();
   }
 
   public get_parameter() {
-    return this.parameter;
+    return this.table_number;
   }
 
   public get_role(): string {
@@ -60,14 +57,13 @@ export class OrdersComponent implements OnInit {
 
   private get_orders(): void {
     console.log("ENTERED");
-    this.os.get_orders(this.model, this.parameter).subscribe({
+    this.os.get_orders(this.table_number).subscribe({
       next: (orders) => {
-        // TODO: to test the sorting efficacy
         this.orders = orders.sort((a, b) => OrdersComponent.STATUS_ENUM[a.status] - OrdersComponent.STATUS_ENUM[b.status]);
         console.log(this.orders);
       },
       error: (error) => {
-        console.log('Error occured while getting: ' + error);
+        this.router.navigate(["notfound"]);
       }
     });
   }
@@ -83,7 +79,7 @@ export class OrdersComponent implements OnInit {
   }
 
   private get_table_seats(): void {
-    this.ts.get_table(this.parameter).subscribe({
+    this.ts.get_table(this.table_number).subscribe({
       next: (table: Table) => {
         this.table_seats = table.seats_occupied;
       },
@@ -98,14 +94,14 @@ export class OrdersComponent implements OnInit {
   }
 
   public free_table() {
-    this.ts.set_table(this.parameter, {"occupied": false}).subscribe( {
+    this.ts.set_table(this.table_number, {"occupied": false}).subscribe( {
       next: (table) => {
       console.log('Table status changed');
       // TODO: remove all the orders of the table
       this.orders.forEach((order: Order) => {
         this.delete_order(order._id);
       });
-      this.ts.set_table(this.parameter, {"seats_occupied": 0}).subscribe( {
+      this.ts.set_table(this.table_number, {"seats_occupied": 0}).subscribe( {
         next: () => {
         console.log('Table number of seats occupied is 0');
         this.router.navigate(["dashboard"]);
@@ -120,7 +116,7 @@ export class OrdersComponent implements OnInit {
   }
 
   public new_order(): void {
-    this.router.navigate(["order/table/" + this.parameter]);
+    this.router.navigate(["order/table/" + this.table_number]);
   }
 
   public delete_order(id: any): void {

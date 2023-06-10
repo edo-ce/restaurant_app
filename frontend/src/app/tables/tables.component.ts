@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Table } from '../model/Table';
 import { TableHttpService } from '../table-http.service';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ export class TablesComponent implements OnInit {
   public tables: Table[] = [];
   public cols_number: number[] = [0, 1, 2, 3];
   private curr_table: Table = {"number": 0, "occupied": true, "seats_capacity": 4, "seats_occupied": 4};
+  @ViewChild('seats_number') seatsNumberInput!: ElementRef;
 
   constructor(private ts: TableHttpService, private router: Router) { }
 
@@ -35,7 +36,9 @@ export class TablesComponent implements OnInit {
     return this.tables.length;
   }
 
-  public update_table(data: Object): void {
+  public update_table(data: any): void {
+    if (data.seats_occupied < 1 || data.seats_occupied > this.get_curr_table().seats_capacity)
+      return;
     this.ts.set_table(this.curr_table.number, data).subscribe( {
       next: () => {
       console.log('Table status changed');

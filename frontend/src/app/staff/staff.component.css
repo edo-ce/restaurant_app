@@ -20,7 +20,6 @@
     cursor: pointer;
 }
 
-.user-link {
-    text-decoration: none;
-    color: black;
+.user-title {
+    cursor: pointer;
 }

@@ -61,7 +61,7 @@
 
                       <div class="form-outline">
                         <label for="inputPrice">Price</label>
-                        <input min="0" type="number" step="0.01" #price name="price" id="inputPrice" class="form-control" placeholder="Enter price"/>
+                        <input min="0" type="number" step="0.01" #price required name="price" id="inputPrice" class="form-control" placeholder="Enter price"/>
                       </div>
 
                       <div class="form-outline ingredients-input">
@@ -78,10 +78,10 @@
                       </div>
                     
                       <div *ngIf="errmessage" class="alert alert-danger" role="alert">
-                        Signup error: {{errmessage}}
+                        Adding error: {{errmessage}}
                       </div>
                     
-                      <button type="submit" class="btn btn-lg btn-primary btn-block" [disabled]=" !name || !price || !type " (click)="add_dish({
+                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]=" !name || !price || !type " (click)="add_dish({
                         'name': name.value,
                         'price': +price.value,
                         'type': type.value,

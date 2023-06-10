@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
   public menu: any = [];
   private curr_dish: string = "";
   public table: any = undefined;
-  errmessage = undefined;
+  errmessage: any = undefined;
 
   constructor(private ds: DishHttpService, private ts: TableHttpService, private us: UserHttpService, 
     private os: OrdersHttpService, private route: ActivatedRoute, private router: Router) { }
@@ -88,10 +88,10 @@ export class MenuComponent implements OnInit {
       next: (dish) => {
         console.log('Dish added:' + JSON.stringify(dish));
         this.errmessage = undefined;
+        window.location.reload();
       },
       error: (error) => {
-        console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
-        this.errmessage = error.error.errormessage || error.error.message;
+        this.errmessage = `Dish ${data.name} already exists.`;
     }});
   }
 

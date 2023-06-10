@@ -349,24 +349,6 @@ app.get("/table/:number/orders", auth, (req, res, next) => {
     });
 });
 
-app.get("/user/:username/orders", auth, (req, res, next) => {
-    user.getModel().findOne({username: req.params.username}).then(
-        (user) => {
-            if (!user)
-                return next({ statusCode:404, error: true, errormessage: "Username is not a valid user"});
-            order.getModel().find({creator_username: req.params.username}).then(
-                (orders) => {
-                    return res.status(200).json(orders);
-                }
-            ).catch((reason) => {
-                return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
-            });
-        }
-    ).catch((reason) => {
-        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
-    })
-})
-
 // get all the statistics
 app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
     statistic.getModel().find({}).then((stats) => {

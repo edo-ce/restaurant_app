@@ -18,7 +18,7 @@ const routes: Routes = [
   ]},
   {path: "staff", component: StaffComponent},
   {path: "menu", component: MenuComponent},
-  {path: "orders/:model/:parameter", component: OrdersComponent},
+  {path: "orders/table/:number", component: OrdersComponent},
   {path: "order/table/:number", component: MenuComponent},
   {path: "statistics/:username", component: StatisticsComponent},
   {path: "statistics", component: StatisticsComponent},

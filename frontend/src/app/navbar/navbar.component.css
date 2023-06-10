@@ -1,0 +1,9 @@
+.chef-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 1em;
+}
+
+.chef-icon:hover {
+    cursor: pointer;
+}

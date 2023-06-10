@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsHttpService } from '../statistics-http.service';
 import { UserHttpService } from '../user-http.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Statistic } from '../model/Statistic';
 
 @Component({
@@ -16,7 +16,7 @@ export class StatisticsComponent implements OnInit {
   public user_statistic: any;
   public statistics: Statistic[] = [];
 
-  constructor(private stats_service: StatisticsHttpService, private us: UserHttpService, private route: ActivatedRoute) { }
+  constructor(private stats_service: StatisticsHttpService, private us: UserHttpService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username');
@@ -33,7 +33,7 @@ export class StatisticsComponent implements OnInit {
       next: (user) => {
         this.user = user;
       },
-      error: (err) => {console.log(err);}
+      error: (err) => {this.router.navigate(["notfound"]);}
     });
   }
 

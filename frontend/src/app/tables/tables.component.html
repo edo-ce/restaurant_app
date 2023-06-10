@@ -39,17 +39,11 @@
             <label class="input-seats" for="inputSeats">Number of people:</label>
             <input type="number" #seats_number min="1" max="{{get_curr_table().seats_capacity}}" required name="seats_number" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
           </div>
-
-          <!-- TODO: add seats_occupied-->
-          <!-- TODO: add seats_occupied-->
-          <!-- TODO: add seats_occupied-->
-          <!-- TODO: add seats_occupied-->
-          <!-- TODO: add seats_occupied-->
         
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
-            <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true})">Occupy</button>
+            <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true, 'seats_occupied': seatsNumberInput.nativeElement.value})">Occupy</button>
           </div>
           </form>
 
