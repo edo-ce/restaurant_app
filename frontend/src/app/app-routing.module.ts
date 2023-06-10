@@ -7,6 +7,7 @@ import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MenuComponent } from './menu/menu.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "/login", pathMatch: "full"},
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: "orders/:model/:parameter", component: OrdersComponent},
   {path: "order/table/:number", component: MenuComponent},
   {path: "statistics/:username", component: StatisticsComponent},
-  {path: "statistics", component: StatisticsComponent}
+  {path: "statistics", component: StatisticsComponent},
+  {path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({

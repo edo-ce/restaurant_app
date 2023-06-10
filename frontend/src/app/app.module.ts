@@ -19,6 +19,7 @@ import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MenuComponent } from './menu/menu.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { StatisticsComponent } from './statistics/statistics.component';
     StaffComponent,
     OrdersComponent,
     MenuComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
