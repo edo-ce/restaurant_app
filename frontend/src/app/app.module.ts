@@ -12,7 +12,7 @@ import { OrdersHttpService } from './orders-http.service';
 import { DishHttpService } from './dish-http.service';
 import { StatisticsHttpService } from './statistics-http.service';
 import { SocketioService } from './socketio.service';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { GuardService } from './guard.service';
 import { TablesComponent } from './tables/tables.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StaffComponent } from './staff/staff.component';
@@ -26,7 +26,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     // contains all the components
     AppComponent,
     LoginComponent,
-    DashboardComponent,
     TablesComponent,
     NavbarComponent,
     StaffComponent,
@@ -46,7 +45,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     {provide: OrdersHttpService, useClass: OrdersHttpService },
     {provide: DishHttpService, useClass: DishHttpService },
     {provide: StatisticsHttpService, useClass: StatisticsHttpService },
-    {provide: SocketioService, useClass: SocketioService }
+    {provide: SocketioService, useClass: SocketioService },
+    {provide: GuardService, useClass: GuardService }
   ],
   bootstrap: [AppComponent]
 })
