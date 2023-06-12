@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class StaffComponent implements OnInit {
 
+  public user: any = { username: '', password: '', name: '', surname: '', role: ''};
   public users: User[] = [];
   private curr_user: string = '';
   errmessage: any = undefined;
@@ -34,18 +35,20 @@ export class StaffComponent implements OnInit {
     return this.us.get_username();
   }
 
-  public add_user(data: User): void{
-    this.us.post_user(data).subscribe({
+  public add_user(): void{
+    if (this.user.password === undefined || this.user.password === "") {
+      this.errmessage = `You need to insert every information.`;
+      return;
+    }
+    
+    this.us.post_user(this.user).subscribe({
       next: (user) => {
         console.log('User added:' + JSON.stringify(user));
         this.errmessage = undefined;
         window.location.reload();
       },
-      error: (error) => {
-        if (!isUser(data))
-          this.errmessage = `You need to insert every information.`;
-        else
-          this.errmessage = `User ${data.username} already exists.`;
+      error: (error) => {          
+        this.errmessage = `User ${this.user.username} already exists.`;
     }});
   }
 
@@ -55,6 +58,7 @@ export class StaffComponent implements OnInit {
         console.log('User ' + username + ' deleted');
         this.curr_user = '';
         this.errmessage = undefined;
+        window.location.reload();
       },
       error: (error) => {
         console.log('Delete error: ' + JSON.stringify(error) );

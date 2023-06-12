@@ -52,6 +52,10 @@
             <a class="nav-link active" aria-current="page" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="check_route('statistics')">Statistics</a>
             <a class="nav-link" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="!check_route('statistics')">Statistics</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" routerLink="/profile" (click)="set_route('profile')" *ngIf="check_route('profile')">Profile</a>
+            <a class="nav-link" routerLink="/profile" (click)="set_route('profile')" *ngIf="!check_route('profile')">Profile</a>
+        </li>
     </ul>
     <a class="nav-link" routerLink="/" (click)="logout()">Logout <i class="bi bi-box-arrow-right"></i></a>
     </div>

@@ -6,6 +6,7 @@ import { StaffComponent } from './staff/staff.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MenuComponent } from './menu/menu.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { ProfileComponent } from './profile/profile.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { GuardService } from './guard.service';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path: "order/table/:number", component: MenuComponent, canActivate: [GuardService]},
   {path: "statistics/:username", component: StatisticsComponent, canActivate: [GuardService]},
   {path: "statistics", component: StatisticsComponent, canActivate: [GuardService]},
+  {path: "profile", component: ProfileComponent, canActivate: [GuardService]},
   {path: '**', component: PageNotFoundComponent}
 ];
 

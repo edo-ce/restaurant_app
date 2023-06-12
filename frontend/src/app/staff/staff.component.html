@@ -41,23 +41,28 @@
                       
                       <div class="form-group">
                         <label for="inputUsername">Username</label>
-                        <input type="text" #username required name="username" class="form-control" id="inputUsername" placeholder="Enter username">
-                      </div>                
+                        <input type="text" #username="ngModel" required name="username" [(ngModel)]="user.username" class="form-control" id="inputUsername" placeholder="Enter username">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" #password="ngModel" required name="password" [(ngModel)]="user.password" class="form-control" id="inputPassword" placeholder="Password">
+                      </div>
                     
                       <div class="form-group">
                         <label for="inputName">Name</label>
-                        <input type="text" #name required name="name" class="form-control" id="inputName" placeholder="Enter name">
+                        <input type="text" #name="ngModel" required name="name" [(ngModel)]="user.name" class="form-control" id="inputName" placeholder="Enter name">
                       </div>
 
                       <div class="form-group">
                         <label for="inputSurname">Surname</label>
-                        <input type="text" #surname required name="surname" class="form-control" id="inputSurname" placeholder="Enter surname">
+                        <input type="text" #surname="ngModel" required name="surname" [(ngModel)]="user.surname" class="form-control" id="inputSurname" placeholder="Enter surname">
                       </div>
 
                       <div class="form-group">
                       <label for="inputRole">Role</label>
-                      <select #role class="form-select" aria-label="Choose a role">
-                        <option value="cashier">Cashier</option>
+                      <select #role="ngModel" name="role" [(ngModel)]="user.role" class="form-select" aria-label="Choose a role">
+                        <option selected="selected" value="cashier">Cashier</option>
                         <option value="cook">Cook</option>
                         <option value="bartender">Bartender</option>
                         <option value="waiter">Waiter</option>
@@ -68,12 +73,7 @@
                         Adding error: {{errmessage}}
                       </div>
                     
-                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]=" !username || !name || !surname || !role" (click)="add_user({
-                        'username': username.value,
-                        'name': name.value,
-                        'surname': surname.value,
-                        'role': role.value
-                      });" >Add</button>
+                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]="!username.valid || !password.valid || !name.valid || !surname.valid || !role.valid || role.value === ''" (click)="add_user();" >Add</button>
                     </form>
 
             </div>
@@ -96,7 +96,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-danger" (click)="delete_user(get_curr_user())">Delete</button>
+            <button type="button" class="btn btn-danger" (click)="delete_user(get_curr_user())">Delete</button>
           </div>
         </form>
         </div>

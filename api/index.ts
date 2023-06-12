@@ -96,7 +96,8 @@ app.route("/users").get(auth, (req, res, next) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 }).post(auth, checkAdminRole, (req, res, next) => {
-    if (req.body.password !== '' && !req.body.password)
+    console.log(req.body);
+    if (req.body.password === undefined || req.body.password === "")
         return next({ statusCode:404, error: true, errormessage: "Password field is missing" });
 
     let password = req.body.password;
@@ -105,6 +106,7 @@ app.route("/users").get(auth, (req, res, next) => {
     if (user.isUser(newUser)) {
         // TODO: check if username already exists
         let newUser = user.newUser(req.body);
+        console.log(password);
         newUser.setPassword(password);
         newUser.save().then((user) => {
             // create a new statistic for the new user
@@ -157,6 +159,36 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
+}).post(auth, (req, res, next) => {  
+    user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
+        (u) => {
+            if (u) {
+                if (req.body.password !== undefined && req.body.password !== "") {
+                    u.setPassword(req.body.password);
+                    console.log("Password changed!");
+                    delete req.body.password;
+                }
+                u.save().then(() => {
+                    if (Object.keys(req.body.password).length === 0)
+                        return res.status(200).json(u);
+                    user.getModel().updateOne({username: req.params.username}, req.body).then(
+                        (updated) => {
+                            if (updated.acknowledged)
+                                return res.status(200).json(updated);
+                            else
+                                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+                        }
+                    ).catch((reason) => {
+                        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+                    });
+                })
+            } else {
+                return res.status(404).json( {error:true, errormessage:"Invalid username"} );
+            }
+        }
+    ).catch((reason) => {
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
 });
 
 // get all the dishes or add a new dish
