@@ -42,16 +42,24 @@ export class OrdersHttpService {
     )
   }
 
-  compute_price(orders: Order[], table_seats: number): number {
+  // compute price for the total of the orders and add a table fee
+  compute_price(orders: Order[], table_seats: number): any {
     if (orders.length === 0)
-      return 0;
+      return {"total_price": 0, "receipt": {}};
+
+    let receipt: any = {};
 
     let total_price: number = table_seats * OrdersHttpService.FEE;
     orders.forEach((order) => {
       order.dishes.forEach((dish_pair) => {
+        if (receipt[dish_pair[0].name])
+          receipt[dish_pair[0].name][1] += dish_pair[1];
+        else
+          receipt[dish_pair[0].name] = [dish_pair[0].price, dish_pair[1]];
         total_price += (dish_pair[0].price * dish_pair[1]);
       });
     });
-    return total_price;
+    receipt["Fee"] = [OrdersHttpService.FEE, table_seats];
+    return {"total_price": total_price, "receipt": receipt};
   }
 }

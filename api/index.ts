@@ -83,8 +83,8 @@ const checkAdminRole = (req, res, next) => {
 
 // APIs
 
-app.get("/", (req, res) => {
-    res.status(200).json({api_version: "1.0", endpoints: ["/login", "/users", "/statistics"]});
+app.get("/", auth, (req, res) => {
+    res.status(200).json({api_version: "1.0"});
 });
 
 // TODO: check if only admin can see them
@@ -290,7 +290,7 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
-}).post(auth, checkAdminRole, (req, res, next) => {
+}).post(auth, (req, res, next) => {
     table.getModel().updateOne({number: req.params.number}, req.body).then(
         (updated) => {
             if (updated.acknowledged)
@@ -310,7 +310,7 @@ app.route("/orders").get(auth, (req, res, next) => {
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).post(auth, checkAdminRole, (req, res, next) => {
+}).post(auth, (req, res, next) => {
     let newOrder = req.body;
     if (order.isOrder(newOrder)) {
         order.getModel().create(newOrder).then((order) => {

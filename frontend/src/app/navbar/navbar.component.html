@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 <div class="container-fluid">
-    <svg class="chef-icon" routerLink="/tables" fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    <svg class="chef-icon" routerLink="{{get_dashboard_route()}}" fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	    viewBox="0 0 463 463" xml:space="preserve">
     <g>
       <g>
@@ -37,24 +37,22 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/tables" (click)="set_route('tables')" *ngIf="check_route('tables')">Tables</a>
-            <a class="nav-link" routerLink="/tables" (click)="set_route('tables')" *ngIf="!check_route('tables')">Tables</a>
+            <a class="nav-link" routerLink="/tables" *ngIf="get_role() === 'cashier' || get_role() === 'waiter'">Tables</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/staff" (click)="set_route('staff')" *ngIf="check_route('staff')">Staff</a>
-            <a class="nav-link" routerLink="/staff" (click)="set_route('staff')" *ngIf="!check_route('staff')">Staff</a>
+            <a class="nav-link" routerLink="/orders" *ngIf="get_role() !== 'waiter'">Orders</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/menu" (click)="set_route('menu')" *ngIf="check_route('menu')">Menu</a>
-            <a class="nav-link" routerLink="/menu" (click)="set_route('menu')" *ngIf="!check_route('menu')">Menu</a>
+            <a class="nav-link" routerLink="/staff" *ngIf="get_role() === 'cashier'">Staff</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="check_route('statistics')">Statistics</a>
-            <a class="nav-link" routerLink="/statistics" (click)="set_route('statistics')" *ngIf="!check_route('statistics')">Statistics</a>
+            <a class="nav-link" routerLink="/menu">Menu</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" routerLink="/profile" (click)="set_route('profile')" *ngIf="check_route('profile')">Profile</a>
-            <a class="nav-link" routerLink="/profile" (click)="set_route('profile')" *ngIf="!check_route('profile')">Profile</a>
+        <li class="nav-item" *ngIf="get_role() === 'cashier'">
+            <a class="nav-link" routerLink="/statistics">Statistics</a>
+        </li>
+        <li class="nav-item">        
+            <a class="nav-link" routerLink="/profile">Profile</a>
         </li>
     </ul>
     <a class="nav-link" routerLink="/" (click)="logout()">Logout <i class="bi bi-box-arrow-right"></i></a>

@@ -8,13 +8,18 @@
   <div class="row">
 
     <div class="col-md-3" *ngFor="let i of cols_number">
-      <div *ngFor="let table of tables; let j = index" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
+      <div *ngFor="let table of tables; let j = index">
         <div *ngIf="j % cols_number.length === i">
-          <div class="table table-occupied" *ngIf="table.occupied">
+          <div class="table table-occupied table-modal" *ngIf="table.occupied" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
             <p>Table {{table.number}}</p>
           </div>
-          <div class="table table-free" *ngIf="!table.occupied">
-            <p>Table {{table.number}}</p>
+          <div *ngIf="!table.occupied">
+            <div class="table table-free" *ngIf="get_role() === 'cashier'">
+              <p>Table {{table.number}}</p>
+            </div>
+            <div class="table table-free table-modal" *ngIf="get_role() === 'waiter'" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
+              <p>Table {{table.number}}</p>
+            </div>
           </div>
       </div>
       </div>
@@ -43,7 +48,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
-            <button type="submit" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true, 'seats_occupied': seatsNumberInput.nativeElement.value})">Occupy</button>
+            <button type="button" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true, 'seats_occupied': seatsNumberInput.nativeElement.value})">Occupy</button>
           </div>
           </form>
 

@@ -26,6 +26,7 @@ export class UserHttpService {
   private static ADMIN: string = "cashier";
   public url = "http://localhost:8080";
   public roles: string[] = ["cashier", "cook", "bartender", "waiter"];
+  public dashboard_routes: any = {"cashier": "/tables", "waiter": "/tables", "cook": "/orders", "bartender": "/orders"};
 
   constructor(private http: HttpClient, private router: Router) {
     console.log("User service instantiated");

@@ -24,7 +24,7 @@
                     <div class="d-flex w-100 justify-content-between">
                     <p class="mb-1">Ingredients: {{ingredients_to_string(dish_pair[0])}}</p>
                     
-                    <span class="bi bi-trash right-icon" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="!table" (click)="set_curr_dish(dish_pair[0].name)"></span>
+                    <span class="bi bi-trash right-icon" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="!table && get_role() === 'cashier'" (click)="set_curr_dish(dish_pair[0].name)"></span>
                     <div class="right-icon" *ngIf="table">
                       <i class="bi bi-plus-lg amount-icon" (click)="change_amount('plus', dish_pair[0].name)"></i>
                       <i class="bi bi-dash-lg amount-icon" (click)="change_amount('minus', dish_pair[0].name)"></i>
@@ -38,8 +38,8 @@
     </div>
 
     <div class="col text-center">
-        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal" *ngIf="!table">Add dish</button>
-        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="table">Make order</button>
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addDishModal" *ngIf="!table && get_role() === 'cashier'">Add dish</button>
+        <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#confirmationModal" *ngIf="table && get_role() === 'waiter'">Make order</button>
     </div>
 
     <!-- Modal Add New Dish -->
@@ -110,7 +110,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-danger" *ngIf="!table" (click)="delete_dish(get_curr_dish())">Delete</button>
+            <button type="button" class="btn btn-danger" *ngIf="!table" data-bs-dismiss="modal" (click)="delete_dish(get_curr_dish())">Delete</button>
             <button type="button" class="btn btn-success" *ngIf="table" data-bs-dismiss="modal" (click)="new_order()">Confirm</button>
         </div>
         </form>

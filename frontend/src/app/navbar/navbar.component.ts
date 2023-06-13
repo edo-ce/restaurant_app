@@ -20,13 +20,8 @@ export class NavbarComponent implements OnInit {
     return this.role;
   }
 
-  set_route(route: string): void {
-    this.curr_route = route;
-    console.log(this.curr_route);
-  }
-
-  check_route(route: string): boolean {
-    return this.curr_route === route;
+  get_dashboard_route(): string {
+    return this.us.dashboard_routes[this.get_role()];
   }
 
   logout() {

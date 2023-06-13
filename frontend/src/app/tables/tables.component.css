@@ -8,7 +8,14 @@
     align-items: center;
 }
 
-.table:hover {
+@media (max-width: 767px) {
+  .table {
+    margin: 20px auto;
+    text-align: center;
+  }
+}
+
+.table-modal:hover {
   cursor: pointer;
 }
 

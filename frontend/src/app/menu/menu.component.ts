@@ -101,6 +101,7 @@ export class MenuComponent implements OnInit {
         console.log('Dish ' + name_dish + ' deleted');
         this.curr_dish = '';
         this.errmessage = undefined;
+        window.location.reload();
       },
       error: (error) => {
         console.log('Delete error: ' + JSON.stringify(error.error.errormessage) );
@@ -165,5 +166,9 @@ export class MenuComponent implements OnInit {
         console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
         this.errmessage = error.error.errormessage || error.error.message;
     }});
+  }
+
+  public get_role(): string {
+    return this.us.get_role();
   }
 }

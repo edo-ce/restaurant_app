@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Table } from '../model/Table';
 import { TableHttpService } from '../table-http.service';
 import { Router } from '@angular/router';
+import { UserHttpService } from '../user-http.service';
 
 @Component({
   selector: 'app-tables',
@@ -15,10 +16,12 @@ export class TablesComponent implements OnInit {
   private curr_table: Table = {"number": 0, "occupied": true, "seats_capacity": 4, "seats_occupied": 4};
   @ViewChild('seats_number') seatsNumberInput!: ElementRef;
 
-  constructor(private ts: TableHttpService, private router: Router) { }
+  constructor(private ts: TableHttpService, private router: Router, private us: UserHttpService) { }
 
   ngOnInit(): void {
       this.get_tables();
+      if (this.get_role() === 'waiter')
+        this.cols_number = [0];
   }
 
   public get_tables(): void {
@@ -42,6 +45,7 @@ export class TablesComponent implements OnInit {
     this.ts.set_table(this.curr_table.number, data).subscribe( {
       next: () => {
       console.log('Table status changed');
+      window.location.reload();
     },
     error: (error) => {
       console.log('Error occurred while posting: ' + error);
@@ -58,5 +62,9 @@ export class TablesComponent implements OnInit {
 
   public open_history() {
     this.router.navigate(["orders/table/" + this.curr_table.number]);
+  }
+
+  public get_role(): string {
+    return this.us.get_role();
   }
 }

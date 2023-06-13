@@ -18,7 +18,9 @@ export class OrdersComponent implements OnInit {
   private table_number: any;
   public orders: Order[] = [];
   private curr_order: any;
-  public total_price: number = -1;
+  public total_price: number = 0;
+  public receipt: any = {};
+  public receipt_keys: string[] = [];
   public table_seats: any = undefined;
   errmessage = undefined;
   public status_class: any = {'todo': 'todo', 'in progress': 'progress', 'to serve': 'serve', 'done': 'done'};
@@ -56,11 +58,11 @@ export class OrdersComponent implements OnInit {
   }
 
   private get_orders(): void {
-    console.log("ENTERED");
     this.os.get_orders(this.table_number).subscribe({
       next: (orders) => {
         this.orders = orders.sort((a, b) => OrdersComponent.STATUS_ENUM[a.status] - OrdersComponent.STATUS_ENUM[b.status]);
         console.log(this.orders);
+        this.get_price();
       },
       error: (error) => {
         this.router.navigate(["notfound"]);
@@ -68,7 +70,7 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  public update_order(data: Object): void {
+  public update_order(data: any): void {
     this.os.set_order(this.curr_order._id.toString(), data).subscribe( {
       next: () => {
       console.log('Order status changed');
@@ -89,8 +91,12 @@ export class OrdersComponent implements OnInit {
     })
   }
 
-  public get_price(): void {
-    this.total_price = this.os.compute_price(this.orders, this.table_seats);
+  private get_price(): void {
+    let res = this.os.compute_price(this.orders, this.table_seats);
+    this.total_price = res.total_price;
+    this.receipt = res.receipt;
+    if (this.receipt instanceof Object)
+      this.receipt_keys = Object.keys(this.receipt as Object);
   }
 
   public free_table() {
@@ -104,7 +110,7 @@ export class OrdersComponent implements OnInit {
       this.ts.set_table(this.table_number, {"seats_occupied": 0}).subscribe( {
         next: () => {
         console.log('Table number of seats occupied is 0');
-        this.router.navigate(["dashboard"]);
+        this.router.navigate(["tables"]);
       },
       error: (error) => {
         console.log('Error occurred while posting: ' + error);

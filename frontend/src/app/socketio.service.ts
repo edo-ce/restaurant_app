@@ -7,9 +7,9 @@ import { io } from "socket.io-client";
 export class SocketioService {
 
   private socket:any;
-  constructor( private us: UserHttpService ) { }
+  constructor(private us: UserHttpService) { }
 
-  connect(): Observable< any > {
+  connect(): Observable<any> {
 
     this.socket = io(this.us.url, {
       transports: ['websocket', 'polling', 'flashsocket'],
