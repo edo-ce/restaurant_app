@@ -8,6 +8,8 @@ import { UserHttpService } from '../user-http.service';
 })
 export class ProfileComponent implements OnInit {
 
+  public pwd = {"password": ""};
+
   constructor(private us: UserHttpService) { }
 
   ngOnInit(): void {
@@ -30,7 +32,15 @@ export class ProfileComponent implements OnInit {
     return this.us.get_role();
   }
 
-  public change_password(password: string): void {
-    
+  public change_password(): void {
+    this.us.update_user(this.pwd).subscribe({
+      next: () => {
+        console.log("Password updated");
+        this.us.logout();
+      },
+      error: (error) => {
+        console.log("Error occurred while posting: " + error);
+      }
+    });
   }
 }

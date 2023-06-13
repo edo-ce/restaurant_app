@@ -169,7 +169,7 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
                     delete req.body.password;
                 }
                 u.save().then(() => {
-                    if (Object.keys(req.body.password).length === 0)
+                    if (Object.keys(req.body).length === 0)
                         return res.status(200).json(u);
                     user.getModel().updateOne({username: req.params.username}, req.body).then(
                         (updated) => {

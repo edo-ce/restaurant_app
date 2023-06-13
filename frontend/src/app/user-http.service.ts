@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import jwt_decode from "jwt-decode";
 import { User } from './model/User';
+import { Router } from '@angular/router';
 
 interface TokenData {
   username: string,
@@ -26,7 +27,7 @@ export class UserHttpService {
   public url = "http://localhost:8080";
   public roles: string[] = ["cashier", "cook", "bartender", "waiter"];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     console.log("User service instantiated");
 
     const localtoken = localStorage.getItem("restaurant_app_token");
@@ -90,6 +91,7 @@ export class UserHttpService {
     console.log("Logging out");
     this.token = "";
     localStorage.setItem("restaurant_app_token", this.token);
+    this.router.navigate(["/"]);
   }
 
   get_token(): string {
@@ -146,8 +148,8 @@ export class UserHttpService {
     );
   }
 
-  update_user(username: string, data: Object): Observable<User> {
-    return this.http.post<User>(this.url + '/users/' + username, data, this.create_options({})).pipe(
+  update_user(data: Object): Observable<User> {
+    return this.http.post<User>(this.url + '/users/' + this.get_username(), data, this.create_options({})).pipe(
       catchError(this.handleError)
     )
   }

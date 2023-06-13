@@ -8,16 +8,19 @@ import { UserHttpService } from '../user-http.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public errmessage = undefined;
+
+  public login_data = {"username": "", "password": ""};
+  public errmessage: any = undefined;
 
   constructor(private router: Router, private us: UserHttpService) { }
 
   ngOnInit(): void {
-      
+      if (this.us.get_token())
+        this.router.navigate(["tables"]);
   }
 
-  login(username: string, password: string, remember: boolean): void {
-    this.us.login(username, password, remember).subscribe({
+  login(remember: boolean): void {
+    this.us.login(this.login_data.username, this.login_data.password, remember).subscribe({
       next: (d) => {
         console.log("Login granted: " + JSON.stringify(d));
         console.log("User service token: " + this.us.get_token());
@@ -25,8 +28,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["tables"]);
       },
       error: (err) => {
-        console.log("Login error: " + JSON.stringify(err));
-        this.errmessage = err.message;
+        this.errmessage = "Username or Password are wrong, please try again.";
       }
     })
   }

@@ -11,5 +11,35 @@
             <div><h5>Name:</h5><p> {{get_name()}}</p></div>
             <div><h5>Surname:</h5><p> {{get_surname()}}</p></div>
             <div><h5>Role:</h5><p> {{get_role()}}</p></div>
+
+            <button type="button" class="btn btn-lg btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#changePwdModal">Change Password</button>
         </div>
+
+    <!-- Modal Change Password -->
+    <div class="modal fade" id="changePwdModal" tabindex="-1" aria-labelledby="changePwdModal" aria-hidden="true">
+      <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+                  <form>         
+                    <div class="form-group">
+                      <label class="input-pwd" for="inputPassword">Password:</label>
+                      <input type="password" #password="ngModel" required name="password" [(ngModel)]="pwd.password" class="form-control" id="inputPassword" placeholder="Password">
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="!password.valid" (click)="change_password();">Update</button>
+                    </div>
+
+                  </form>
+
+          </div>
+      </div>
+      </div>
+  </div>
 </div>
