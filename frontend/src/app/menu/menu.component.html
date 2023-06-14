@@ -5,9 +5,10 @@
     <h1 class="title text-center" *ngIf="table">New Order</h1>
 
     <div *ngFor="let type of ['food', 'drink']">
+      <div *ngIf="get_role() === 'cashier' || get_role() === 'waiter' || (get_role() === 'cook' && type === 'food') || (get_role() === 'bartender' && type === 'drink')">
 
         <h5 class="type-title" *ngIf="type === 'food'">Food:</h5>
-        <h5 class="type-title" *ngIf="type === 'drink'">Drink:</h5>
+        <h5 class="type-title" *ngIf="type === 'drink'">Drinks:</h5>
 
         <ul class="list-group">
             
@@ -35,6 +36,7 @@
                 
             </div>
         </ul>
+      </div>
     </div>
 
     <div class="col text-center">
@@ -56,23 +58,23 @@
                       
                       <div class="form-group">
                         <label for="inputName">Name</label>
-                        <input type="text" #name required name="name" class="form-control" id="inputName" placeholder="Enter name">
+                        <input type="text" #name="ngModel" required name="name" [(ngModel)]="dish.name" class="form-control" id="inputName" placeholder="Enter name">
                       </div>                
 
                       <div class="form-outline">
                         <label for="inputPrice">Price</label>
-                        <input min="0" type="number" step="0.01" #price required name="price" id="inputPrice" class="form-control" placeholder="Enter price"/>
+                        <input min="0.1" type="number" step="0.01" #price="ngModel" required name="price" [(ngModel)]="dish.price" id="inputPrice" class="form-control" placeholder="Enter price"/>
                       </div>
 
                       <div class="form-outline ingredients-input">
                         <label for="inputIngredients">Ingredients</label>
-                        <input type="text" #ingredients name="ingredients" id="inputIngredients" class="form-control" placeholder="Enter ingredients (separated by comma)"/>
+                        <input type="text" #ingredients="ngModel" name="ingredients" [(ngModel)]="dish.ingredients" id="inputIngredients" class="form-control" placeholder="Enter ingredients (separated by comma)"/>
                       </div>
 
                       <div class="form-group">
                       <label for="inputType">Type</label>
-                      <select #type class="form-select" aria-label="Choose a type">
-                        <option value="food">Food</option>
+                      <select #type="ngModel" name="type" [(ngModel)]="dish.type" class="form-select" aria-label="Choose a type">
+                        <option selected="selected" value="food">Food</option>
                         <option value="drink">Drink</option>
                       </select>
                       </div>
@@ -81,12 +83,7 @@
                         Adding error: {{errmessage}}
                       </div>
                     
-                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]=" !name || !price || !type " (click)="add_dish({
-                        'name': name.value,
-                        'price': +price.value,
-                        'type': type.value,
-                        'ingredients': string_to_ingredients(ingredients.value)
-                      })">Add</button>
+                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]=" !name.valid || !price.valid || !type.valid " (click)="add_dish()">Add</button>
                     </form>
 
             </div>

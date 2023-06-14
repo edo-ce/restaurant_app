@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class StaffComponent implements OnInit {
 
-  public user: any = { username: '', password: '', name: '', surname: '', role: ''};
+  public user: any = {username: '', password: '', name: '', surname: '', role: ''};
   public users: User[] = [];
   private curr_user: string = '';
   errmessage: any = undefined;

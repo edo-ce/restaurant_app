@@ -29,4 +29,10 @@ export class StatisticsHttpService {
       catchError(this.us.handleError)
     )
   }
+
+  update_statistic(username: string, data: Object): Observable<Statistic> {
+    return this.http.post<Statistic>(this.us.url + '/statistics/' + username, data, this.us.create_options({})).pipe(
+      catchError(this.us.handleError)
+    )
+  }
 }

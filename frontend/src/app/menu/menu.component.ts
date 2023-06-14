@@ -5,6 +5,7 @@ import { DishHttpService } from '../dish-http.service';
 import { ActivatedRoute } from '@angular/router';
 import { TableHttpService } from '../table-http.service';
 import { UserHttpService } from '../user-http.service';
+import { StatisticsHttpService } from '../statistics-http.service';
 import { OrdersHttpService } from '../orders-http.service';
 import { Router } from '@angular/router';
 
@@ -18,10 +19,11 @@ export class MenuComponent implements OnInit {
   public menu: any = [];
   private curr_dish: string = "";
   public table: any = undefined;
+  public dish: Dish = {name: '', price: 0.1, ingredients: [], type: 'food'};
   errmessage: any = undefined;
 
   constructor(private ds: DishHttpService, private ts: TableHttpService, private us: UserHttpService, 
-    private os: OrdersHttpService, private route: ActivatedRoute, private router: Router) { }
+    private os: OrdersHttpService, private route: ActivatedRoute, private router: Router, private stats_service: StatisticsHttpService) { }
 
   @Output() posted_order = new EventEmitter<Order>();
   @Output() posted_dish = new EventEmitter<Dish>();
@@ -56,8 +58,10 @@ export class MenuComponent implements OnInit {
     return dish.ingredients.join(', ');
   }
 
-  public string_to_ingredients(ingredients: string): string[] {
-    return ingredients.split(',').map((ingredient) => {
+  public string_to_ingredients(ingredients: any): string[] {
+    if (Array.isArray(ingredients))
+      return [];
+    return ingredients.toString().split(',').map((ingredient: string) => {
       return ingredient.trim();
     });
   }
@@ -81,17 +85,18 @@ export class MenuComponent implements OnInit {
     })
   }
 
-  public add_dish(data: Dish): void {
-    if (data.price < 0)
+  public add_dish(): void {
+    if (this.dish.price <= 0)
       return;
-    this.ds.post_dish(data).subscribe({
+    this.dish.ingredients = this.string_to_ingredients(this.dish.ingredients);
+    this.ds.post_dish(this.dish).subscribe({
       next: (dish) => {
         console.log('Dish added:' + JSON.stringify(dish));
         this.errmessage = undefined;
         window.location.reload();
       },
       error: (error) => {
-        this.errmessage = `Dish ${data.name} already exists.`;
+        this.errmessage = `Dish ${this.dish.name} already exists.`;
     }});
   }
 
@@ -155,16 +160,27 @@ export class MenuComponent implements OnInit {
           this.os.post_order(data2).subscribe({
             next: (order) => {
               this.posted_order.emit(order);
-              this.router.navigate(["orders/table/" + this.table.number]);
+              this.add_statistics("orders/table/" + this.table.number, 2);
             }
           });
         } else {
-          this.router.navigate(["orders/table/" + this.table.number]);
+          this.add_statistics("orders/table/" + this.table.number, 1);
         }
       },
       error: (error) => {
-        console.log('Posting error: ' + JSON.stringify(error.error.errormessage) );
+        console.log('Posting error: ' + JSON.stringify(error.error.errormessage));
         this.errmessage = error.error.errormessage || error.error.message;
+    }});
+  }
+
+  private add_statistics(route: string, num: number) {
+    this.stats_service.update_statistic(this.us.get_username(), {'num_orders': num}).subscribe( {
+      next: () => {
+      console.log('Statistics updated');
+      this.router.navigate([route]);
+    },
+    error: (error) => {
+      console.log('Error occurred while posting: ' + error);
     }});
   }
 

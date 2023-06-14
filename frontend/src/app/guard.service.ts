@@ -21,11 +21,10 @@ export class GuardService implements CanActivate, OnInit {
   constructor(private router: Router, private us: UserHttpService, private http: HttpClient) { }
 
   ngOnInit(): void {
-      this.check_token();
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
-    if (state.url !== '/login' && !this.token_valid) {
+    if (state.url !== '/login' && this.us.get_token() === '') {
       this.router.navigate(['login']);
       return false;
     }
@@ -36,18 +35,5 @@ export class GuardService implements CanActivate, OnInit {
    }
 
     return true;
-  }
-
-  check_token(route: any = null) {
-    this.http.get<any>(`${this.us.url}/`, this.us.create_options({})).subscribe({
-      next: () => {
-        this.token_valid = true;
-        if (route)
-          this.router.navigate([route]);
-      },
-      error: (err) => {
-        this.token_valid = false;
-      }
-    });
   }
 }

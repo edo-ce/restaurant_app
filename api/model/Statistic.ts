@@ -5,7 +5,7 @@ export interface Statistic extends mongoose.Document {
     num_orders: number, // how many orders served/prepared/checked out
     num_services: number, // how many work days
     dishes_prepared: [string, number][], // name of dish and amount prepared
-    tables_opened: [number, number][], // number of table and how many time opened
+    tables_opened: [number, number, number][], // number of table, how many time opened and number of people
     tables_closed: [number, number, number][] // number of table, how many time closed, and total amount spent
 }
 

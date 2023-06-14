@@ -12,7 +12,7 @@ import { GuardService } from './guard.service';
 
 const routes: Routes = [
   {path: "", redirectTo: "/login", pathMatch: "full"},
-  {path: "login", component: LoginComponent, canActivate: [GuardService]},
+  {path: "login", component: LoginComponent},
   {path: "tables", component: TablesComponent, canActivate: [GuardService]},
   {path: "staff", component: StaffComponent, canActivate: [GuardService]},
   {path: "menu", component: MenuComponent, canActivate: [GuardService]},

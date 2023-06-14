@@ -68,8 +68,6 @@ export class UserHttpService {
   }
 
   login(username: string, password: string, remember: boolean): Observable<any> {
-    console.log(`Login ${username} ${password}`);
-
     const options = {
       headers: new HttpHeaders({
         authorization: 'Basic ' + btoa(`${username}:${password}`),

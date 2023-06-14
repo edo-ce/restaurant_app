@@ -21,12 +21,12 @@
         "username": "user4",
         "num_orders": 4,
         "num_services": 2,
-        "tables_opened": [ [4, 2], [3, 1], [2, 1] ]
+        "tables_opened": [ [4, 2, 3], [3, 1, 6], [2, 1, 2] ]
     },
     {
         "username": "user5",
         "num_orders": 4,
         "num_services": 3,
-        "tables_opened": [ [1, 2], [3, 1], [6, 1] ]
+        "tables_opened": [ [1, 2, 2], [3, 1, 6], [6, 1, 7] ]
     }
 ]

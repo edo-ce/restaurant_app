@@ -40,7 +40,7 @@
             <a class="nav-link" routerLink="/tables" *ngIf="get_role() === 'cashier' || get_role() === 'waiter'">Tables</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" routerLink="/orders" *ngIf="get_role() !== 'waiter'">Orders</a>
+            <a class="nav-link" routerLink="/orders">Orders</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" routerLink="/staff" *ngIf="get_role() === 'cashier'">Staff</a>

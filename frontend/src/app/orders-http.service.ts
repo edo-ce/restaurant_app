@@ -15,8 +15,11 @@ export class OrdersHttpService {
 
   constructor(private http: HttpClient, private us: UserHttpService, private ts: TableHttpService) { }
 
-  get_orders(number: number): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.us.url}/table/${number}/orders`, this.us.create_options({})).pipe(
+  get_orders(number: any): Observable<Order[]> {
+    let route: string = `${this.us.url}/orders`;
+    if (number)
+      route = `${this.us.url}/table/${number}/orders`;
+    return this.http.get<Order[]>(route, this.us.create_options({})).pipe(
       tap( (data) => {
         // console.log(JSON.stringify(data));
       }),

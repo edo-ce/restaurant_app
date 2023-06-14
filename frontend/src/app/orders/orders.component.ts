@@ -4,6 +4,7 @@ import { Order } from '../model/Order';
 import { OrdersHttpService } from '../orders-http.service';
 import { TableHttpService } from '../table-http.service';
 import { UserHttpService } from '../user-http.service';
+import { StatisticsHttpService } from '../statistics-http.service';
 import { Router } from '@angular/router';
 import { Table } from '../model/Table';
 import { SocketioService } from '../socketio.service';
@@ -15,7 +16,7 @@ import { SocketioService } from '../socketio.service';
 })
 export class OrdersComponent implements OnInit {
 
-  private table_number: any;
+  public table_number: any;
   public orders: Order[] = [];
   private curr_order: any;
   public total_price: number = 0;
@@ -27,7 +28,7 @@ export class OrdersComponent implements OnInit {
   private static STATUS_ENUM: any = {"to serve": 0, "in progress": 1, "todo": 2, "done": 3};
 
   constructor(private sio: SocketioService, private route: ActivatedRoute, private os: OrdersHttpService, private ts: TableHttpService, 
-    private router: Router, private us: UserHttpService) { }
+    private router: Router, private us: UserHttpService, private stats_service: StatisticsHttpService) { }
 
   ngOnInit(): void {
     this.table_number = this.route.snapshot.paramMap.get('number');
@@ -38,7 +39,8 @@ export class OrdersComponent implements OnInit {
     console.log("ORDERS RETRIEVED: " + JSON.stringify(this.orders));
     */
     this.get_orders();
-    this.get_table_seats();
+    if (this.table_number)
+      this.get_table_seats();
   }
 
   public get_parameter() {
@@ -62,7 +64,8 @@ export class OrdersComponent implements OnInit {
       next: (orders) => {
         this.orders = orders.sort((a, b) => OrdersComponent.STATUS_ENUM[a.status] - OrdersComponent.STATUS_ENUM[b.status]);
         console.log(this.orders);
-        this.get_price();
+        if (this.table_number)
+          this.get_price();
       },
       error: (error) => {
         this.router.navigate(["notfound"]);
@@ -74,6 +77,18 @@ export class OrdersComponent implements OnInit {
     this.os.set_order(this.curr_order._id.toString(), data).subscribe( {
       next: () => {
       console.log('Order status changed');
+      if (data.status === 'to serve') {
+        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': 1}).subscribe( {
+          next: () => {
+          console.log('Statistics updated');
+          window.location.reload();
+        },
+        error: (error) => {
+          console.log('Error occurred while posting: ' + error);
+        }});
+      } else {
+        window.location.reload();
+      }
     },
     error: (error: any) => {
       console.log('Error occurred while posting: ' + error);
@@ -100,16 +115,19 @@ export class OrdersComponent implements OnInit {
   }
 
   public free_table() {
-    this.ts.set_table(this.table_number, {"occupied": false}).subscribe( {
+    this.ts.set_table(this.table_number, {"occupied": false, "seats_occupied": 0}).subscribe( {
       next: (table) => {
       console.log('Table status changed');
-      // TODO: remove all the orders of the table
+      // remove all the orders of the table
+      let count_orders = 0;
       this.orders.forEach((order: Order) => {
+        count_orders++;
         this.delete_order(order._id);
       });
-      this.ts.set_table(this.table_number, {"seats_occupied": 0}).subscribe( {
+      // update user statistics
+      this.stats_service.update_statistic(this.us.get_username(), {'num_orders': count_orders}).subscribe( {
         next: () => {
-        console.log('Table number of seats occupied is 0');
+        console.log('Statistics updated');
         this.router.navigate(["tables"]);
       },
       error: (error) => {

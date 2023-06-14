@@ -87,7 +87,6 @@ app.get("/", auth, (req, res) => {
     res.status(200).json({api_version: "1.0"});
 });
 
-// TODO: check if only admin can see them
 // get all the users or add a new one
 app.route("/users").get(auth, (req, res, next) => {
     user.getModel().find({}, {digest: 0, salt: 0}).then((users) => {
@@ -126,8 +125,6 @@ app.route("/users").get(auth, (req, res, next) => {
     }
 });
 
-// TODO: see if needed or if only admin can read it
-// TODO: check if username is wrong so no user is queried
 // get or delete the user with username specified in the request
 app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
@@ -348,7 +345,6 @@ app.route("/orders/:id").get(auth, (req, res, next) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
 }).post(auth, (req, res, next) => {
-    // TODO: what happen if in the dishes there aren't dishes in the db?
     order.getModel().updateOne({_id: req.params.id}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
@@ -390,7 +386,23 @@ app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
     });
 });
 
-// get specific statistics for a user
+function update_table_stats(data1, data2) {
+    data2.forEach((table_triple2) => {
+        let found = false;
+        data1.forEach((table_triple1) => {
+            if (table_triple2[0] === table_triple1[0]) {
+                table_triple1[1] += table_triple2[1];
+                table_triple1[2] += table_triple2[2];
+                found = true;
+            }
+        });
+        if (!found)
+            data1.push(table_triple2);
+    });
+    return data1;
+}
+
+// get or update specific statistics for a user
 app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) => {
     statistic.getModel().findOne({username: req.params.username}, {}).then(
         (stat) => {
@@ -403,16 +415,50 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 }).post(auth, (req, res, next) => {
-    statistic.getModel().updateOne({username: req.params.username}, req.body).then(
-        (updated) => {
-            if (updated.acknowledged) {
-                return res.status(200).json(updated);
+    statistic.getModel().findOne({username: req.params.username}, {}).then(
+        (stat) => {
+            if (stat) {
+                let data: any = {};
+                if (req.body.num_services !== undefined)
+                    data.num_services = stat.num_services + req.body.num_services;
+                if (req.body.num_orders !== undefined)
+                    data.num_orders = stat.num_orders + req.body.num_orders;
+                if (req.body.dishes_prepared !== undefined) {
+                    req.body.dishes_prepared.forEach((dish) => {
+                        let found = false;
+                        stat.dishes_prepared.forEach((dish2) => {
+                            if (dish[0] === dish2[0]) {
+                                dish2[1] += dish[1];
+                                found = true;
+                            }
+                        })
+                        if (!found)
+                            stat.dishes_prepared.push(dish);
+                    });
+                    data.dishes_prepared = stat.dishes_prepared;
+                }
+                if (req.body.tables_opened !== undefined)
+                    data.tables_opened = update_table_stats(stat.tables_opened, req.body.tables_opened);
+                if (req.body.tables_closed !== undefined)
+                    data.tables_closed = update_table_stats(stat.tables_closed, req.body.tables_closed);
+
+                statistic.getModel().updateOne({username: req.params.username}, data).then(
+                    (updated) => {
+                        if (updated.acknowledged) {
+                            return res.status(200).json(updated);
+                        } else {
+                            return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+                        }
+                    }
+                ).catch((reason) => {
+                    return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+                });
             } else {
-                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+                return res.status(404).json( {error:true, errormessage:"Invalid username"} );
             }
         }
     ).catch((reason) => {
-        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
+        return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
 });;
 

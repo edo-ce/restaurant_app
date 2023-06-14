@@ -14,7 +14,9 @@
         <h5>Name and Surname:</h5><p>{{user?.name}} {{user?.surname}}</p>
         <h5>Role:</h5><p>{{user?.role}}</p>
         <h5>Number of Services:</h5><p>{{user_statistic?.num_services}}</p>
-        <h5>Number of Orders:</h5><p>{{user_statistic?.num_orders}}</p>
+        <h5>Number of Orders <span *ngIf="user.role === 'cook' || user.role === 'bartender'">Prepared</span>
+            <span *ngIf="user.role === 'waiter'">Took</span>
+            <span *ngIf="user.role === 'cashier'">Checked</span>:</h5><p>{{user_statistic?.num_orders}}</p>
 
         <div [ngSwitch]="user?.role">
             <span *ngSwitchCase="'cashier'">
@@ -42,7 +44,7 @@
                         <li>{{dish_pair[0]}} x{{dish_pair[1]}}</li>
                     </div>
                 </ul>
-                <h5 *ngIf="user_statistic?.dishes_prepared.length === 0">0</h5>
+                <p *ngIf="user_statistic?.dishes_prepared.length === 0">0</p>
             </span>
         </div>
     </div>
@@ -60,6 +62,7 @@
         <h5>Total revenue:</h5><p>{{compute_revenue()}}€</p>
         <h5>Number of tables served:</h5><p>{{compute_tables_served()}}</p>
         <h5>Number of orders made:</h5><p>{{compute_orders_made()}}</p>
+        <h5>Number of people served:</h5><p></p>
     </div>
 
 </div>

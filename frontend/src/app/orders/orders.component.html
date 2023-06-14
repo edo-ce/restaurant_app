@@ -1,21 +1,22 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <h1 class="title text-center">Table {{get_parameter()}} Orders History</h1>
+    <h1 class="title text-center" *ngIf="table_number">Table {{get_parameter()}} Orders History</h1>
+    <h1 class="title text-center" *ngIf="!table_number">Orders List</h1>
 
     <div *ngFor="let type of ['food', 'drink']">
         <div *ngIf="get_role() === 'cashier' || get_role() === 'waiter' || (get_role() === 'cook' && type === 'food') || (get_role() === 'bartender' && type === 'drink')">
 
             <h5 class="type-title" *ngIf="type === 'food'">Food:</h5>
-            <h5 class="type-title" *ngIf="type === 'drink'">Drink:</h5>
+            <h5 class="type-title" *ngIf="type === 'drink'">Drinks:</h5>
 
             <ul class="list-group">
                 <div *ngFor="let order of orders">
                 <div class="list-group-item list-group-item-action" *ngIf="order.type === type">
                     
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{order.time | date: 'shortTime'}}</h5>
-                        <small>{{order.creator_username}}</small>
+                        <h5 class="mb-1">{{order.time | date: 'shortTime'}}, <i>table {{order.table_number}}</i></h5>
+                        <small>Creator: <i>{{order.creator_username}}</i></small>
                     </div>
                     
                     <div class="d-flex w-100 justify-content-between">
@@ -41,11 +42,15 @@
         </div>
     </div>
 
-    <div class="bottom-area">
+    <div class="bottom-area" *ngIf="table_number">
         <h5>People: {{table_seats}}</h5>
+        <div *ngIf="get_role() === 'cashier'">
+            <br>
+            <h5>Total price: {{total_price}}€</h5>
+        </div>
     </div>
 
-    <div class="col text-center">
+    <div class="col text-center" *ngIf="table_number">
         <button type="submit" class="btn btn-primary btn-lg bottom-button" (click)="new_order()" *ngIf="get_role() === 'waiter'">Order</button>
         <button type="submit" class="btn btn-success btn-lg bottom-button" data-bs-toggle="modal" data-bs-target="#payoutModal" *ngIf="get_role() === 'cashier'">Payout</button>
     </div>
@@ -103,7 +108,7 @@
                         Signup error: {{errmessage}}
                       </div>
                     
-                      <button type="submit" class="btn btn-lg btn-primary btn-block" [disabled]="!status" (click)="update_order({'status': status.value})">Change</button>
+                      <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]="!status" (click)="update_order({'status': status.value})">Change</button>
                     </form>
 
             </div>
