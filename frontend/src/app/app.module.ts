@@ -14,6 +14,7 @@ import { DishHttpService } from './dish-http.service';
 import { StatisticsHttpService } from './statistics-http.service';
 import { SocketioService } from './socketio.service';
 import { GuardService } from './guard.service';
+import { JwtHelperService, JWT_OPTIONS   } from '@auth0/angular-jwt';
 import { TablesComponent } from './tables/tables.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StaffComponent } from './staff/staff.component';
@@ -50,7 +51,9 @@ import { ProfileComponent } from './profile/profile.component';
     {provide: DishHttpService, useClass: DishHttpService },
     {provide: StatisticsHttpService, useClass: StatisticsHttpService },
     {provide: SocketioService, useClass: SocketioService },
-    {provide: GuardService, useClass: GuardService }
+    {provide: GuardService, useClass: GuardService },
+    {provide: JwtHelperService, useClass: JwtHelperService },
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS }
   ],
   bootstrap: [AppComponent]
 })

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserHttpService } from '../user-http.service';
 import { GuardService } from '../guard.service';
 import { StatisticsHttpService } from '../statistics-http.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-login',
@@ -14,10 +15,10 @@ export class LoginComponent implements OnInit {
   public login_data = {"username": "", "password": ""};
   public errmessage: any = undefined;
 
-  constructor(private router: Router, private us: UserHttpService, private gs: GuardService, private stats_service: StatisticsHttpService) { }
+  constructor(private router: Router, private us: UserHttpService, private gs: GuardService, private stats_service: StatisticsHttpService, private jhs: JwtHelperService) { }
 
   ngOnInit(): void {
-    if (this.us.get_token() !== '')
+    if (!this.jhs.isTokenExpired(this.us.get_token()))
       this.router.navigate([this.us.dashboard_routes[this.us.get_role()]]);
   }
 
