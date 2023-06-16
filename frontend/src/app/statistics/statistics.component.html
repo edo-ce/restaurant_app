@@ -17,6 +17,12 @@
         <h5>Number of Orders <span *ngIf="user.role === 'cook' || user.role === 'bartender'">Prepared</span>
             <span *ngIf="user.role === 'waiter'">Took</span>
             <span *ngIf="user.role === 'cashier'">Checked</span>:</h5><p>{{user_statistic?.num_orders}}</p>
+        <div *ngIf="user.role === 'waiter'">
+            <h5>Number of people served:</h5><p>{{waiter_people_served()}}</p>
+        </div>
+        <div *ngIf="user.role === 'cashier'">
+            <h5>Total revenue:</h5><p>{{cashier_total_revenue()}}€</p>
+        </div>
 
         <div [ngSwitch]="user?.role">
             <span *ngSwitchCase="'cashier'">
@@ -26,7 +32,7 @@
                         <li>Table number {{table_tern[0]}} x{{table_tern[1]}}, Total amount: {{table_tern[2]}}€</li>
                     </div>
                 </ul>
-                <h5 *ngIf="user_statistic?.tables_closed.length === 0">0</h5>
+                <p *ngIf="user_statistic?.tables_closed.length === 0">0</p>
             </span> 
             <span *ngSwitchCase="'waiter'">
                 <h5>Tables opened:</h5>
@@ -35,7 +41,7 @@
                         <li>Table number {{table_pair[0]}} x{{table_pair[1]}}</li>
                     </div>
                 </ul>
-                <h5 *ngIf="user_statistic?.tables_opened.length === 0">0</h5>
+                <p *ngIf="user_statistic?.tables_opened.length === 0">0</p>
             </span> 
             <span *ngSwitchDefault>
                 <h5>Dishes prepared:</h5>
@@ -60,9 +66,11 @@
 
         <h5>Number of staff members:</h5><p>{{statistics.length}}</p>
         <h5>Total revenue:</h5><p>{{compute_revenue()}}€</p>
-        <h5>Number of tables served:</h5><p>{{compute_tables_served()}}</p>
-        <h5>Number of orders made:</h5><p>{{compute_orders_made()}}</p>
-        <h5>Number of people served:</h5><p></p>
+        <!-- Compute number of tables served (index 1) -->
+        <h5>Number of tables served:</h5><p>{{compute_tables_served(1)}}</p>
+        <h5>Number of dishes prepared:</h5><p>{{compute_orders_made()}}</p>
+        <!-- Compute number of people served (index 2) -->
+        <h5>Number of people served:</h5><p>{{compute_tables_served(2)}}</p>
     </div>
 
 </div>

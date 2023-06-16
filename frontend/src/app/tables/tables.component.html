@@ -13,16 +13,15 @@
           <div class="table table-occupied table-modal" *ngIf="table.occupied" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
             <p>Table {{table.number}}</p>
           </div>
-          <div *ngIf="!table.occupied">
-            <div class="table table-free" *ngIf="get_role() === 'cashier'">
-              <p>Table {{table.number}}</p>
-            </div>
-            <div class="table table-free table-modal" *ngIf="get_role() === 'waiter'" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
-              <p>Table {{table.number}}</p>
-            </div>
+          <div class="table table-free table-modal" *ngIf="!table.occupied" data-bs-toggle="modal" data-bs-target="#tableOptions" (click)="set_curr_table(table)">
+            <p>Table {{table.number}}</p>
           </div>
+        </div>
       </div>
-      </div>
+    </div>
+
+    <div class="col text-center" *ngIf="get_role() === 'cashier'">
+      <button type="button" class="btn btn-primary btn-lg add-button" data-bs-toggle="modal" data-bs-target="#addTableModal">Add table</button>
     </div>
 
   </div>
@@ -41,14 +40,21 @@
           <br>
           <p *ngIf="get_curr_table().occupied">Seats occupied: {{get_curr_table().seats_occupied}}</p>
           <div class="form-outline" *ngIf="!get_curr_table().occupied">
-            <label class="input-seats" for="inputSeats">Number of people:</label>
-            <input type="number" #seats_number min="1" max="{{get_curr_table().seats_capacity}}" required name="seats_number" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
+            <div *ngIf="get_role() === 'cashier'">
+              <br>
+              <p>Do you want to delete this table?</p>
+            </div>
+            <div *ngIf="get_role() === 'waiter'">
+              <label class="input-seats" for="inputSeats">Number of people:</label>
+              <input type="number" #seats_number min="1" max="{{get_curr_table().seats_capacity}}" required name="seats_number" id="inputSeats" class="form-control seats-form" placeholder="Enter number"/>
+            </div>
           </div>
         
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" *ngIf="get_curr_table().occupied" (click)="open_history()" data-bs-dismiss="modal">Order history</button>
-            <button type="button" class="btn btn-success" *ngIf="!get_curr_table().occupied" (click)="update_table({'occupied': true, 'seats_occupied': seatsNumberInput.nativeElement.value})">Occupy</button>
+            <button type="button" class="btn btn-success" *ngIf="!get_curr_table().occupied && get_role() === 'waiter'" (click)="update_table({'occupied': true, 'seats_occupied': seatsNumberInput.nativeElement.value})">Occupy</button>
+            <button type="button" class="btn btn-danger" *ngIf="!get_curr_table().occupied && get_role() === 'cashier'" (click)="delete_table()">Delete</button>
           </div>
           </form>
 
@@ -57,5 +63,42 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Add New Table -->
+  <div class="modal fade" id="addTableModal" tabindex="-1" aria-labelledby="addTableModal" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add a new table</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        
+            
+                <form>
+
+                  <div class="form-group">
+                    <label class="input-number" for="inputNumber">Table number:</label>
+                    <input type="number" #number="ngModel" min="1" required name="number" [(ngModel)]="new_table.number" id="inputNumber" class="form-control number-form" placeholder="Enter number"/>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="input-capacity" for="inputCapacity">Seats capacity:</label>
+                    <input type="number" #capacity="ngModel" min="1" required name="capacity" [(ngModel)]="new_table.seats_capacity" id="inputCapacity" class="form-control capacity-form" placeholder="Enter capacity"/>
+                  </div>
+                
+                  <div *ngIf="errmessage" class="alert alert-danger" role="alert">
+                    Adding error: {{errmessage}}
+                  </div>
+                
+                  <button type="button" class="btn btn-lg btn-primary btn-block" [disabled]="!number.valid || !capacity.valid" (click)="add_table();" >Add</button>
+                </form>
+
+        </div>
+
+    </div>
+    </div>
+</div>
+
 
 </div>

@@ -386,20 +386,18 @@ app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
     });
 });
 
-function update_table_stats(data1, data2) {
-    data2.forEach((table_triple2) => {
-        let found = false;
-        data1.forEach((table_triple1) => {
-            if (table_triple2[0] === table_triple1[0]) {
-                table_triple1[1] += table_triple2[1];
-                table_triple1[2] += table_triple2[2];
-                found = true;
-            }
-        });
-        if (!found)
-            data1.push(table_triple2);
+function update_table_stats(stat_tables, table): [number, number, number][] {
+    let found = false;
+    stat_tables.forEach((table_triple1: [number, number, number]) => {
+        if (table[0] === table_triple1[0]) {
+            table_triple1[1] += +table[1];
+            table_triple1[2] += +table[2];
+            found = true;
+        }
     });
-    return data1;
+    if (!found)
+        stat_tables.push(table);
+    return stat_tables;
 }
 
 // get or update specific statistics for a user
@@ -424,16 +422,24 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                 if (req.body.num_orders !== undefined)
                     data.num_orders = stat.num_orders + req.body.num_orders;
                 if (req.body.dishes_prepared !== undefined) {
-                    req.body.dishes_prepared.forEach((dish) => {
+                    console.log(req.body.dishes_prepared);
+                    console.log(stat.dishes_prepared);
+                    req.body.dishes_prepared.forEach((dish: [string, number]) => {
+                        console.log("Dish" + JSON.stringify(dish));
+                        dish[1] = +dish[1];
                         let found = false;
-                        stat.dishes_prepared.forEach((dish2) => {
+                        stat.dishes_prepared.forEach((dish2: [string, number]) => {
+                            console.log("Dish2" + JSON.stringify(dish2));
+                            dish2[1] = +dish2[1];
                             if (dish[0] === dish2[0]) {
-                                dish2[1] += dish[1];
+                                dish2[1] = (+dish2[1]) + (+dish[1]);
                                 found = true;
                             }
                         })
-                        if (!found)
+                        if (!found) {
                             stat.dishes_prepared.push(dish);
+                            console.log("First" + JSON.stringify(stat.dishes_prepared));
+                        }
                     });
                     data.dishes_prepared = stat.dishes_prepared;
                 }
@@ -441,6 +447,8 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                     data.tables_opened = update_table_stats(stat.tables_opened, req.body.tables_opened);
                 if (req.body.tables_closed !== undefined)
                     data.tables_closed = update_table_stats(stat.tables_closed, req.body.tables_closed);
+
+                console.log(data);
 
                 statistic.getModel().updateOne({username: req.params.username}, data).then(
                     (updated) => {
@@ -460,7 +468,7 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-});;
+});
 
 
 // HTTP basic authentication strategy using passport middleware
@@ -508,10 +516,16 @@ app.use((req,res,next) => {
 
 
 // aux function to retrieve data from a json file
-const retrieveData = (data: [Object], type) => {
+const retrieveData = (data, type) => {
     let ans = [];
     data.forEach((elem) => {
-        ans.push(type.getModel().create(elem));
+        if (type === user) {
+            let u = user.newUser(elem);
+            u.setPassword(elem.username);
+            ans.push(u.save());
+        } else {
+            ans.push(type.getModel().create(elem));
+        }
     });
     return ans;
 }

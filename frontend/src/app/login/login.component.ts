@@ -22,8 +22,8 @@ export class LoginComponent implements OnInit {
       this.router.navigate([this.us.dashboard_routes[this.us.get_role()]]);
   }
 
-  login(remember: boolean): void {
-    this.us.login(this.login_data.username, this.login_data.password, remember).subscribe({
+  login(): void {
+    this.us.login(this.login_data.username, this.login_data.password).subscribe({
       next: (d) => {
         console.log("Login granted: " + JSON.stringify(d));
         console.log("User service token: " + this.us.get_token());

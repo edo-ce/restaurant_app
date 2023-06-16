@@ -67,7 +67,7 @@ export class UserHttpService {
     return throwError(() => new Error('Something bad happened; please try again later.') );
   }
 
-  login(username: string, password: string, remember: boolean): Observable<any> {
+  login(username: string, password: string): Observable<any> {
     const options = {
       headers: new HttpHeaders({
         authorization: 'Basic ' + btoa(`${username}:${password}`),
@@ -80,8 +80,7 @@ export class UserHttpService {
       tap((data) => {
         console.log(JSON.stringify(data));
         this.token = (data as ReceivedToken).token;
-        if (remember)
-          localStorage.setItem("restaurant_app_token", this.token as string);
+        localStorage.setItem("restaurant_app_token", this.token as string);
       })
     );
   }

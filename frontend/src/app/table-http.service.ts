@@ -35,4 +35,16 @@ export class TableHttpService {
       catchError(this.us.handleError)
     )
   }
+
+  post_table(data: any): Observable<Table> {
+    return this.http.post<Table>(this.us.url + '/tables', data, this.us.create_options()).pipe(
+      catchError(this.us.handleError)
+    );
+  }
+
+  delete_table(number: number): Observable<Table> {
+    return this.http.delete<Table>(this.us.url + '/tables/' + number, this.us.create_options()).pipe(
+      catchError(this.us.handleError)
+    );
+  }
 }

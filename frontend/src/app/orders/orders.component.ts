@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order } from '../model/Order';
+import { Dish } from '../model/Dish';
 import { OrdersHttpService } from '../orders-http.service';
 import { TableHttpService } from '../table-http.service';
 import { UserHttpService } from '../user-http.service';
@@ -78,7 +79,11 @@ export class OrdersComponent implements OnInit {
       next: () => {
       console.log('Order status changed');
       if (data.status === 'to serve') {
-        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': 1}).subscribe( {
+        let dishes: [string, number][] = [];
+        this.curr_order.dishes.forEach((dish_pair: [Dish, number]) => {
+          dishes.push([dish_pair[0].name, +dish_pair[1]]);
+        });
+        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': 1, 'dishes_prepared': dishes}).subscribe( {
           next: () => {
           console.log('Statistics updated');
           window.location.reload();
@@ -125,14 +130,18 @@ export class OrdersComponent implements OnInit {
         this.delete_order(order._id);
       });
       // update user statistics
-      this.stats_service.update_statistic(this.us.get_username(), {'num_orders': count_orders}).subscribe( {
-        next: () => {
-        console.log('Statistics updated');
+      if (this.total_price > 0) {
+        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': count_orders, 'tables_closed': [+this.table_number, 1, this.total_price]}).subscribe( {
+          next: () => {
+          console.log('Statistics updated');
+          this.router.navigate(["tables"]);
+        },
+        error: (error) => {
+          console.log('Error occurred while posting: ' + error);
+        }});
+      } else {
         this.router.navigate(["tables"]);
-      },
-      error: (error) => {
-        console.log('Error occurred while posting: ' + error);
-      }});
+      }
     },
     error: (error) => {
       console.log('Error occurred while posting: ' + error);

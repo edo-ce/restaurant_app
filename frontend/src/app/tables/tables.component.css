@@ -1,7 +1,7 @@
 .table {
     width: 120px;
     height: 120px;
-    margin: 40px;
+    margin: 40px auto; /* TODO: remove auto for larger visualization */
     border: 1px solid black;
     display: flex;
     justify-content: center;
@@ -43,6 +43,10 @@
   margin-bottom: 5px;
 }
 
+.form-group {
+  margin: 20px 0px;
+}
+
 @media (max-width: 992px) {
   .col-md-3 {
     flex-basis: 50%;
@@ -55,4 +59,8 @@
     flex-basis: 100%;
     max-width: 100%;
   }
+}
+
+.add-button {
+  margin: 20px;
 }

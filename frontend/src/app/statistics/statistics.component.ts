@@ -55,11 +55,27 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
+  public waiter_people_served(): number {
+    let amount = 0;
+    this.user_statistic?.tables_opened.forEach((table_tern: [number, number, number]) => {
+      amount += table_tern[2];
+    })
+    return amount;
+  }
+
+  public cashier_total_revenue(): number {
+    let amount = 0;
+    this.user_statistic?.tables_closed.forEach((table_tern: [number, number, number]) => {
+      amount += table_tern[2];
+    })
+    return amount;
+  }
+
   public compute_revenue(): number {
     let amount = 0;
     this.statistics.forEach((stat: any) => {
       if (stat.tables_closed) {
-        stat.tables_closed.forEach((table_tern: any) => {
+        stat.tables_closed.forEach((table_tern: [number, number, number]) => {
           amount += table_tern[2];
         });
       }
@@ -67,12 +83,12 @@ export class StatisticsComponent implements OnInit {
     return amount;
   }
 
-  public compute_tables_served(): number {
+  public compute_tables_served(index: number): number {
     let amount = 0;
     this.statistics.forEach((stat: any) => {
       if (stat.tables_opened) {
-        stat.tables_opened.forEach((table_pair: any) => {
-          amount += table_pair[1];
+        stat.tables_opened.forEach((table_tern: [number, number, number]) => {
+          amount += table_tern[index];
         });
       }
     });
@@ -83,7 +99,7 @@ export class StatisticsComponent implements OnInit {
     let amount = 0;
     this.statistics.forEach((stat: any) => {
       if (stat.dishes_prepared) {
-        stat.dishes_prepared.forEach((dish_pair: any) => {
+        stat.dishes_prepared.forEach((dish_pair: [string, number]) => {
           console.log(dish_pair)
           amount += +dish_pair[1];
         });
