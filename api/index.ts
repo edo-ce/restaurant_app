@@ -422,14 +422,10 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                 if (req.body.num_orders !== undefined)
                     data.num_orders = stat.num_orders + req.body.num_orders;
                 if (req.body.dishes_prepared !== undefined) {
-                    console.log(req.body.dishes_prepared);
-                    console.log(stat.dishes_prepared);
                     req.body.dishes_prepared.forEach((dish: [string, number]) => {
-                        console.log("Dish" + JSON.stringify(dish));
                         dish[1] = +dish[1];
                         let found = false;
                         stat.dishes_prepared.forEach((dish2: [string, number]) => {
-                            console.log("Dish2" + JSON.stringify(dish2));
                             dish2[1] = +dish2[1];
                             if (dish[0] === dish2[0]) {
                                 dish2[1] = (+dish2[1]) + (+dish[1]);
@@ -438,7 +434,6 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                         })
                         if (!found) {
                             stat.dishes_prepared.push(dish);
-                            console.log("First" + JSON.stringify(stat.dishes_prepared));
                         }
                     });
                     data.dishes_prepared = stat.dishes_prepared;
