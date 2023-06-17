@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsHttpService } from '../statistics-http.service';
 import { UserHttpService } from '../user-http.service';
+import { SocketioService } from '../socketio.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Statistic } from '../model/Statistic';
 
@@ -16,16 +17,27 @@ export class StatisticsComponent implements OnInit {
   public user_statistic: any;
   public statistics: Statistic[] = [];
 
-  constructor(private stats_service: StatisticsHttpService, private us: UserHttpService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private stats_service: StatisticsHttpService, private us: UserHttpService, private route: ActivatedRoute, 
+    private router: Router, private ios: SocketioService) { }
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username');
+    this.get_socket_statistics();
     if (this.username) {
       this.get_user();
       this.get_statistic();
     } else {
       this.get_statistics();
     }
+  }
+
+  private get_socket_statistics(): void {
+    this.ios.get_update('updateStatistics').subscribe(() => {
+      if (this.username)
+        this.get_statistic();
+      else
+        this.get_statistics();
+    });
   }
 
   private get_user(): void {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User, isUser } from '../model/User';
 import { UserHttpService } from '../user-http.service';
 import { Router } from '@angular/router';
+import { SocketioService } from '../socketio.service';
 
 @Component({
   selector: 'app-staff',
@@ -15,11 +16,17 @@ export class StaffComponent implements OnInit {
   private curr_user: string = '';
   errmessage: any = undefined;
 
-  constructor(private us: UserHttpService, private router: Router) {}
+  constructor(private us: UserHttpService, private router: Router, private ios: SocketioService) {}
 
   ngOnInit(): void {
+    this.get_socket_staff();
+    this.get_users();
+  }
+
+  private get_socket_staff(): void {
+    this.ios.get_update('updateUsers').subscribe(() => {
       this.get_users();
-      console.log("Utenti: " + this.users.length);
+    });
   }
 
   public get_users(): void {

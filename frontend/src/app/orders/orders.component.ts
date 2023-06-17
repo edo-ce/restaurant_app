@@ -28,20 +28,21 @@ export class OrdersComponent implements OnInit {
   public status_class: any = {'todo': 'todo', 'in progress': 'progress', 'to serve': 'serve', 'done': 'done'};
   private static STATUS_ENUM: any = {"to serve": 0, "in progress": 1, "todo": 2, "done": 3};
 
-  constructor(private sio: SocketioService, private route: ActivatedRoute, private os: OrdersHttpService, private ts: TableHttpService, 
+  constructor(private ios: SocketioService, private route: ActivatedRoute, private os: OrdersHttpService, private ts: TableHttpService, 
     private router: Router, private us: UserHttpService, private stats_service: StatisticsHttpService) { }
 
   ngOnInit(): void {
     this.table_number = this.route.snapshot.paramMap.get('number');
-    /*
-    this.sio.connect().subscribe((o) => {
-      this.get_orders();
-    });
-    console.log("ORDERS RETRIEVED: " + JSON.stringify(this.orders));
-    */
+    this.get_socket_orders();
     this.get_orders();
     if (this.table_number)
       this.get_table_seats();
+  }
+
+  private get_socket_orders(): void {
+    this.ios.get_update('updateOrders').subscribe(() => {
+      this.get_orders();
+    });
   }
 
   public get_parameter() {

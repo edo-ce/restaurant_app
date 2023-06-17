@@ -1,12 +1,12 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Dish } from '../model/Dish';
-import { Order } from '../model/Order';
 import { DishHttpService } from '../dish-http.service';
 import { ActivatedRoute } from '@angular/router';
 import { TableHttpService } from '../table-http.service';
 import { UserHttpService } from '../user-http.service';
 import { StatisticsHttpService } from '../statistics-http.service';
 import { OrdersHttpService } from '../orders-http.service';
+import { SocketioService } from '../socketio.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,19 +22,24 @@ export class MenuComponent implements OnInit {
   public dish: Dish = {name: '', price: 0.1, ingredients: [], type: 'food'};
   errmessage: any = undefined;
 
-  constructor(private ds: DishHttpService, private ts: TableHttpService, private us: UserHttpService, 
+  constructor(private ds: DishHttpService, private ts: TableHttpService, private us: UserHttpService, private ios: SocketioService, 
     private os: OrdersHttpService, private route: ActivatedRoute, private router: Router, private stats_service: StatisticsHttpService) { }
 
-  @Output() posted_order = new EventEmitter<Order>();
-  @Output() posted_dish = new EventEmitter<Dish>();
-
   ngOnInit(): void {
+    this.get_socket_menu();
     this.get_menu();
     if (this.route.snapshot.paramMap.get('number'))
       this.get_table(this.route.snapshot.paramMap.get('number'));
   }
 
+  private get_socket_menu(): void {
+    this.ios.get_update('updateDishes').subscribe(() => {
+      this.get_menu();
+    });
+  }
+
   private get_menu(): void {
+    this.menu = [];
     this.ds.get_dishes().subscribe({
       next: (dishes) => {
         dishes.forEach((dish) => {
@@ -155,11 +160,9 @@ export class MenuComponent implements OnInit {
     this.os.post_order(data1).subscribe({
       next: (order) => {
         this.errmessage = undefined;
-        this.posted_order.emit(order);
         if (data2) {
           this.os.post_order(data2).subscribe({
             next: (order) => {
-              this.posted_order.emit(order);
               this.add_statistics("orders/table/" + this.table.number, 2);
             }
           });

@@ -84,7 +84,7 @@ const checkAdminRole = (req, res, next) => {
 // APIs
 
 app.get("/", auth, (req, res) => {
-    res.status(200).json({api_version: "1.0"});
+    res.status(200).json({api_version: "1.0"}); // TODO: add endpoints
 });
 
 // get all the users or add a new one
@@ -109,9 +109,11 @@ app.route("/users").get(auth, (req, res, next) => {
         newUser.setPassword(password);
         newUser.save().then((user) => {
             // create a new statistic for the new user
+            ios.emit('updateUsers');
             const rolesStatistics = {"cashier": "tables_closed", "cook": "dishes_prepared", "bartender": "dishes_prepared", "waiter": "tables_opened"};
             statistic.getModel().create({"username": user.username, [rolesStatistics[req.body.role]]: []}).then((stat) => {
                 console.log("Statistic created: " + JSON.stringify(stat));
+                ios.emit('updateStatistics');
                 return res.status(200).json(user);
             }).catch((reason) => {
                 return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -125,7 +127,7 @@ app.route("/users").get(auth, (req, res, next) => {
     }
 });
 
-// get or delete the user with username specified in the request
+// get, delete or update the user with username specified in the request
 app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
         (user) => {
@@ -141,9 +143,11 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     user.getModel().deleteOne({username: req.params.username}).then(
         (query) => {
             if (query.deletedCount > 0) {
+                ios.emit('updateUsers');
                 // delete the statistic for the deleted user
                 statistic.getModel().deleteOne({username: req.params.username}).then(
                     (query) => {
+                        ios.emit('updateStatistics');
                         return res.status(200).json( {error:false, errormessage:""} );
                     }
                 ).catch((reason) => {
@@ -170,10 +174,12 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
                         return res.status(200).json(u);
                     user.getModel().updateOne({username: req.params.username}, req.body).then(
                         (updated) => {
-                            if (updated.acknowledged)
+                            if (updated.acknowledged) {
+                                ios.emit('updateUsers');
                                 return res.status(200).json(updated);
-                            else
+                            } else {
                                 return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+                            }
                         }
                     ).catch((reason) => {
                         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -199,6 +205,7 @@ app.route("/dishes").get(auth, (req, res, next) => {
     let newDish = req.body;
     if (dish.isDish(newDish)) {
         dish.getModel().create(newDish).then((dish) => {
+            ios.emit('updateDishes');
             return res.status(200).json(dish);
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -208,7 +215,7 @@ app.route("/dishes").get(auth, (req, res, next) => {
     }
 });
 
-// get or delete a dish from the menu
+// get or update a dish from the menu
 app.route("/dishes/:name").get(auth, (req, res, next) => {
     dish.getModel().findOne({name: req.params.name}, {}).then(
         (dish) => {
@@ -223,25 +230,16 @@ app.route("/dishes/:name").get(auth, (req, res, next) => {
 }).delete(auth, checkAdminRole, (req, res, next) => {
     dish.getModel().deleteOne({name: req.params.name}).then(
         (query) => {
-            if (query.deletedCount > 0)
+            if (query.deletedCount > 0) {
+                ios.emit('updateDishes');
                 return res.status(200).json( {error:false, errormessage:""} );
-            else
+            } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid dish name"} );
+            }
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
-}).post(auth, checkAdminRole, (req, res, next) => {
-    dish.getModel().updateOne({name: req.params.name}, req.body).then(
-        (updated) => {
-            if (updated.acknowledged)
-                return res.status(200).json(updated);
-            else
-                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
-        }
-    ).catch((reason) => {
-        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
-    });
 });
 
 // get all the tables or add a new table
@@ -255,6 +253,7 @@ app.route("/tables").get(auth, (req, res, next) => {
     let newTable = req.body;
     if (table.isTable(newTable)) {
         table.getModel().create(newTable).then((table) => {
+            ios.emit('updateTables');
             return res.status(200).json(table);
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -264,7 +263,7 @@ app.route("/tables").get(auth, (req, res, next) => {
     }
 });
 
-// get or delete or update a table
+// get, delete or update a table
 app.route("/tables/:number").get(auth, (req, res, next) => {
     table.getModel().findOne({number: req.params.number}, {}).then(
         (table) => {
@@ -279,10 +278,12 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
 }).delete(auth, checkAdminRole, (req, res, next) => {
     table.getModel().deleteOne({number: req.params.number}).then(
         (query) => {
-            if (query.deletedCount > 0)
+            if (query.deletedCount > 0) {
+                ios.emit('updateTables');
                 return res.status(200).json( {error:false, errormessage:""} );
-            else
+            } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid table number"} );
+            }
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -290,10 +291,12 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
 }).post(auth, (req, res, next) => {
     table.getModel().updateOne({number: req.params.number}, req.body).then(
         (updated) => {
-            if (updated.acknowledged)
+            if (updated.acknowledged) {
+                ios.emit('updateTables');
                 return res.status(200).json(updated);
-            else
+            } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+            }
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -311,7 +314,7 @@ app.route("/orders").get(auth, (req, res, next) => {
     let newOrder = req.body;
     if (order.isOrder(newOrder)) {
         order.getModel().create(newOrder).then((order) => {
-            ios.emit('broadcast', order);
+            ios.emit('updateOrders');
             return res.status(200).json(order);
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -321,7 +324,7 @@ app.route("/orders").get(auth, (req, res, next) => {
     }
 });
 
-// get or delete or update an order
+// get, delete or update an order
 app.route("/orders/:id").get(auth, (req, res, next) => {
     order.getModel().findOne({_id: req.params.id}, {}).then(
         (order) => {
@@ -336,10 +339,12 @@ app.route("/orders/:id").get(auth, (req, res, next) => {
 }).delete(auth, (req, res, next) => {
     order.getModel().deleteOne({_id: req.params.id}).then(
         (query) => {
-            if (query.deletedCount > 0)
+            if (query.deletedCount > 0) {
+                ios.emit('updateOrders');
                 return res.status(200).json( {error:false, errormessage:""} );
-            else
+            } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid order ID"} );
+            }
         }
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -348,7 +353,7 @@ app.route("/orders/:id").get(auth, (req, res, next) => {
     order.getModel().updateOne({_id: req.params.id}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
-                ios.emit('broadcast', order);
+                ios.emit('updateOrders');
                 return res.status(200).json(updated);
             } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
@@ -443,11 +448,10 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                 if (req.body.tables_closed !== undefined)
                     data.tables_closed = update_table_stats(stat.tables_closed, req.body.tables_closed);
 
-                console.log(data);
-
                 statistic.getModel().updateOne({username: req.params.username}, data).then(
                     (updated) => {
                         if (updated.acknowledged) {
+                            ios.emit('updateStatistics');
                             return res.status(200).json(updated);
                         } else {
                             return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
@@ -584,7 +588,6 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
     (count) => {
         if (count === 1) {
             // insert bootstrap users
-            // TODO: handle the password setting
             console.log("Adding users");
             let users = retrieveData(require('./util/users.json'), user);
             return Promise.all(users);
@@ -620,9 +623,9 @@ mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mo
     () => {
         let server = http.createServer(app);
 
-        ios = io(server);
+        ios = io(server, {cors: true, origins: ["*"]});
         ios.on('connection', (client) => {
-        console.log("Socket.io client connected".green);
+            console.log("Socket.io client connected".green);
         });
 
         server.listen(8080, () => console.log("HTTP Server started on port 8080".green));

@@ -4,6 +4,7 @@ import { TableHttpService } from '../table-http.service';
 import { Router } from '@angular/router';
 import { UserHttpService } from '../user-http.service';
 import { StatisticsHttpService } from '../statistics-http.service';
+import { SocketioService } from '../socketio.service';
 
 @Component({
   selector: 'app-tables',
@@ -19,12 +20,14 @@ export class TablesComponent implements OnInit {
   errmessage: any = undefined;
   @ViewChild('seats_number') seatsNumberInput!: ElementRef;
 
-  constructor(private ts: TableHttpService, private router: Router, private us: UserHttpService, private stats_service: StatisticsHttpService) { }
+  constructor(private ts: TableHttpService, private router: Router, private us: UserHttpService, 
+    private stats_service: StatisticsHttpService, private ios: SocketioService) { }
 
   ngOnInit(): void {
-      this.get_tables();
-      if (this.get_role() === 'waiter')
-        this.cols_number = [0];
+    this.get_socket_tables();
+    this.get_tables();
+    if (this.get_role() === 'waiter')
+      this.cols_number = [0];
   }
 
   public get_tables(): void {
@@ -35,6 +38,12 @@ export class TablesComponent implements OnInit {
       error: (error) => {
         console.log('Error occured while getting: ' + error);
       }
+    });
+  }
+
+  private get_socket_tables(): void {
+    this.ios.get_update('updateTables').subscribe(() => {
+      this.get_tables();
     });
   }
 
