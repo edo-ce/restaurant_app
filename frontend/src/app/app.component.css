@@ -1,3 +1,10 @@
 .bottomfooter {
     margin-top: 2em;
 }
+
+.custom-alert {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+}

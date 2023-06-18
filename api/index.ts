@@ -315,6 +315,10 @@ app.route("/orders").get(auth, (req, res, next) => {
     if (order.isOrder(newOrder)) {
         order.getModel().create(newOrder).then((order) => {
             ios.emit('updateOrders');
+            if (order.type === 'food')
+                ios.emit('cooks', 'There is a new order for table ' + order.table_number);
+            else
+                ios.emit('bartenders', 'There is a new order for table ' + order.table_number);
             return res.status(200).json(order);
         }).catch((reason) => {
             return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
@@ -353,8 +357,18 @@ app.route("/orders/:id").get(auth, (req, res, next) => {
     order.getModel().updateOne({_id: req.params.id}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
-                ios.emit('updateOrders');
-                return res.status(200).json(updated);
+                order.getModel().findOne({_id: req.params.id}, {}).then(
+                    (order) => {
+                        if (req.body.status !== undefined && req.body.status === 'in progress')
+                            ios.emit(order.creator_username, `An order for table ${order.table_number} is in progress`);
+                        else if (req.body.status !== undefined && req.body.status === 'to serve')
+                            ios.emit(order.creator_username, `An order for table ${order.table_number} is ready to be served`);
+                        ios.emit('updateOrders');
+                        return res.status(200).json(order);
+                    }
+                ).catch((reason) => {
+                    return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+                });
             } else {
                 return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
             }
