@@ -545,7 +545,7 @@ const retrieveData = (data, type) => {
 
 
 // Connect to DB using Mongoose
-mongoose.connect(`mongodb+srv://edo:${process.env.MONGO_PWD}@cluster0.xehvg80.mongodb.net/?retryWrites=true&w=majority`)
+mongoose.connect('mongodb://mymongo:27017/index')
 .then(
     () => {
         console.log("Connected to MongoDB");
