@@ -43,3 +43,7 @@
 .type-title {
     margin: 20px;
 }
+
+.delete-order:hover {
+    cursor: pointer;
+}

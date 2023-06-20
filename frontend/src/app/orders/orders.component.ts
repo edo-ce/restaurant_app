@@ -114,7 +114,7 @@ export class OrdersComponent implements OnInit {
 
   private get_price(): void {
     let res = this.os.compute_price(this.orders, this.table_seats);
-    this.total_price = res.total_price;
+    this.total_price = +res.total_price;
     this.receipt = res.receipt;
     if (this.receipt instanceof Object)
       this.receipt_keys = Object.keys(this.receipt as Object);
@@ -132,7 +132,7 @@ export class OrdersComponent implements OnInit {
       });
       // update user statistics
       if (this.total_price > 0) {
-        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': count_orders, 'tables_closed': [+this.table_number, 1, this.total_price]}).subscribe( {
+        this.stats_service.update_statistic(this.us.get_username(), {'num_orders': count_orders, 'tables_closed': [+this.table_number, 1, this.total_price], 'total_revenue': this.total_price}).subscribe( {
           next: () => {
           console.log('Statistics updated');
           this.router.navigate(["tables"]);

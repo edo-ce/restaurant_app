@@ -3,7 +3,8 @@
         "username": "user1",
         "num_orders": 26,
         "num_services": 4,
-        "tables_closed": [ [1, 2, 120], [3, 1, 40], [6, 1, 25] ]
+        "tables_closed": [ [1, 2, 120], [3, 1, 40], [6, 1, 25] ],
+        "total_revenue": 300
     },
     {
         "username": "user2",

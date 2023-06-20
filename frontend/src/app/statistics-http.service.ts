@@ -35,4 +35,10 @@ export class StatisticsHttpService {
       catchError(this.us.handleError)
     )
   }
+
+  reset_statistics(data: Object): Observable<Statistic> {
+    return this.http.post<Statistic>(this.us.url + '/statistics/', data, this.us.create_options({})).pipe(
+      catchError(this.us.handleError)
+    )
+  }
 }

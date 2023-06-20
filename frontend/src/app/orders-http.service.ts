@@ -11,7 +11,7 @@ import { TableHttpService } from './table-http.service';
 })
 export class OrdersHttpService {
 
-  private static FEE: number = 2;
+  private fee: number = 2;
 
   constructor(private http: HttpClient, private us: UserHttpService, private ts: TableHttpService) { }
 
@@ -52,7 +52,7 @@ export class OrdersHttpService {
 
     let receipt: any = {};
 
-    let total_price: number = table_seats * OrdersHttpService.FEE;
+    let total_price: number = table_seats * this.fee;
     orders.forEach((order) => {
       order.dishes.forEach((dish_pair) => {
         if (receipt[dish_pair[0].name])
@@ -62,7 +62,7 @@ export class OrdersHttpService {
         total_price += (dish_pair[0].price * dish_pair[1]);
       });
     });
-    receipt["Fee"] = [OrdersHttpService.FEE, table_seats];
+    receipt["Fee"] = [this.fee, table_seats];
     return {"total_price": total_price, "receipt": receipt};
   }
 }

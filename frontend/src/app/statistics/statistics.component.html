@@ -14,19 +14,19 @@
         <h5>Name and Surname:</h5><p>{{user?.name}} {{user?.surname}}</p>
         <h5>Role:</h5><p>{{user?.role}}</p>
         <h5>Number of Services:</h5><p>{{user_statistic?.num_services}}</p>
-        <h5>Number of Orders <span *ngIf="user.role === 'cook' || user.role === 'bartender'">Prepared</span>
+        <h5>Daily number of Orders <span *ngIf="user.role === 'cook' || user.role === 'bartender'">Prepared</span>
             <span *ngIf="user.role === 'waiter'">Took</span>
             <span *ngIf="user.role === 'cashier'">Checked</span>:</h5><p>{{user_statistic?.num_orders}}</p>
         <div *ngIf="user.role === 'waiter'">
-            <h5>Number of people served:</h5><p>{{waiter_people_served()}}</p>
+            <h5>Daily number of people served:</h5><p>{{waiter_people_served()}}</p>
         </div>
         <div *ngIf="user.role === 'cashier'">
-            <h5>Total revenue:</h5><p>{{cashier_total_revenue()}}€</p>
+            <h5>Daily total revenue:</h5><p>{{cashier_total_revenue()}}€</p>
         </div>
 
         <div [ngSwitch]="user?.role">
             <span *ngSwitchCase="'cashier'">
-                <h5>Tables_closed:</h5>
+                <h5>Daily tables_closed:</h5>
                 <ul class="list-unstyled" *ngIf="user_statistic?.tables_closed.length > 0">
                     <div *ngFor="let table_tern of user_statistic?.tables_closed">
                         <li>Table number {{table_tern[0]}} x{{table_tern[1]}}, Total amount: {{table_tern[2]}}€</li>
@@ -35,7 +35,7 @@
                 <p *ngIf="user_statistic?.tables_closed.length === 0">0</p>
             </span> 
             <span *ngSwitchCase="'waiter'">
-                <h5>Tables opened:</h5>
+                <h5>Daily tables opened:</h5>
                 <ul class="list-unstyled" *ngIf="user_statistic?.tables_opened.length > 0">
                     <div *ngFor="let table_pair of user_statistic?.tables_opened">
                         <li>Table number {{table_pair[0]}} x{{table_pair[1]}}</li>
@@ -44,7 +44,7 @@
                 <p *ngIf="user_statistic?.tables_opened.length === 0">0</p>
             </span> 
             <span *ngSwitchDefault>
-                <h5>Dishes prepared:</h5>
+                <h5>Daily dishes prepared:</h5>
                 <ul class="list-unstyled" *ngIf="user_statistic?.dishes_prepared.length > 0">
                     <div *ngFor="let dish_pair of user_statistic?.dishes_prepared">
                         <li>{{dish_pair[0]}} x{{dish_pair[1]}}</li>
@@ -67,10 +67,36 @@
         <h5>Number of staff members:</h5><p>{{statistics.length}}</p>
         <h5>Total revenue:</h5><p>{{compute_revenue()}}€</p>
         <!-- Compute number of tables served (index 1) -->
-        <h5>Number of tables served:</h5><p>{{compute_tables_served(1)}}</p>
-        <h5>Number of dishes prepared:</h5><p>{{compute_orders_made()}}</p>
+        <h5>Daily number of tables served:</h5><p>{{compute_tables_served(1)}}</p>
+        <h5>Daily number of dishes prepared:</h5><p>{{compute_orders_made()}}</p>
         <!-- Compute number of people served (index 2) -->
-        <h5>Number of people served:</h5><p>{{compute_tables_served(2)}}</p>
-    </div>
+        <h5>Daily number of people served:</h5><p>{{compute_tables_served(2)}}</p>
 
+        <div class="col text-center">
+            <button type="button" class="btn btn-danger btn-lg reset-button" data-bs-toggle="modal" data-bs-target="#confirmationModal">Reset statistics</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Modal Reset Statistics -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <form>
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reset daily statistics?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="reset_statistics()">Reset</button>
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
 </div>

@@ -60,6 +60,7 @@ docker run -it --name mongodbshell --network restaurant_app --rm mongo:6 mongosh
 Then, inside the shell:
 
 ```
-use postmessage;
+use index;
 show collections;
+db.<collection>.find();
 ```

@@ -6,7 +6,8 @@ export interface Statistic extends mongoose.Document {
     num_services: number, // how many work days
     dishes_prepared: [string, number][], // name of dish and amount prepared
     tables_opened: [number, number, number][], // number of table, how many time opened and number of people
-    tables_closed: [number, number, number][] // number of table, how many time closed, and total amount spent
+    tables_closed: [number, number, number][], // number of table, how many time closed, and total amount spent
+    total_revenue: number
 }
 
 const tableSchema = new mongoose.Schema<Statistic>({
@@ -36,6 +37,11 @@ const tableSchema = new mongoose.Schema<Statistic>({
     tables_closed: {
         type: [[mongoose.SchemaTypes.Number, mongoose.SchemaTypes.Number, mongoose.SchemaTypes.Number]],
         required: false
+    },
+    total_revenue: {
+        type: mongoose.SchemaTypes.Number,
+        required: true,
+        default: 0
     }
 })
 

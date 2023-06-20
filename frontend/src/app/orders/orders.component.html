@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="container">
+<div class="container list">
     <h1 class="title text-center" *ngIf="table_number">Table {{get_parameter()}} Orders History</h1>
     <h1 class="title text-center" *ngIf="!table_number">Orders List</h1>
 
@@ -16,7 +16,12 @@
                     
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{order.time | date: 'shortTime'}}, <i>table {{order.table_number}}</i></h5>
-                        <small>Creator: <i>{{order.creator_username}}</i></small>
+                        <div>
+                            <small>Creator: <i>{{order.creator_username}}
+                            <span *ngIf="table_number && get_role() === 'waiter'"> | 
+                            <span class="delete-order" data-bs-toggle="modal" data-bs-target="#confirmationModal" (click)="set_curr_order(order)">Delete
+                            </span></span></i></small>
+                        </div>
                     </div>
                     
                     <div class="d-flex w-100 justify-content-between">
@@ -34,8 +39,7 @@
                             data-bs-toggle="modal" data-bs-target="#statusModal" (click)="set_curr_order(order)">
                             {{order.status}}
                         </h6>
-                    </div>
-                    
+                    </div>   
                 </div>
                 </div>
             </ul>
@@ -114,6 +118,27 @@
             </div>
 
         </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Dish -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <form>
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the order?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" (click)="delete_order(get_curr_order()._id)">Delete</button>
+            </div>
+            </form>
+            </div>
         </div>
     </div>
 

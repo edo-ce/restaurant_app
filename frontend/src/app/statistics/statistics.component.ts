@@ -86,11 +86,7 @@ export class StatisticsComponent implements OnInit {
   public compute_revenue(): number {
     let amount = 0;
     this.statistics.forEach((stat: any) => {
-      if (stat.tables_closed) {
-        stat.tables_closed.forEach((table_tern: [number, number, number]) => {
-          amount += table_tern[2];
-        });
-      }
+      amount += stat.total_revenue;
     });
     return amount;
   }
@@ -112,11 +108,21 @@ export class StatisticsComponent implements OnInit {
     this.statistics.forEach((stat: any) => {
       if (stat.dishes_prepared) {
         stat.dishes_prepared.forEach((dish_pair: [string, number]) => {
-          console.log(dish_pair)
           amount += +dish_pair[1];
         });
       }
     });
     return amount;
+  }
+
+  public reset_statistics(): void {
+    this.stats_service.reset_statistics({'num_orders': 0, 'dishes_prepared': [], 'tables_opened': [], 'tables_closed': []}).subscribe( {
+      next: () => {
+      console.log('Statistics reset');
+      window.location.reload();
+    },
+    error: (error) => {
+      console.log('Error occurred while posting: ' + error);
+    }});
   }
 }

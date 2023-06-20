@@ -6,7 +6,6 @@ import * as order from './model/Order';
 import * as statistic from './model/Statistic';
 
 import http = require('http');
-import https = require('https');
 import colors = require('colors');
 colors.enabled = true;
 
@@ -103,7 +102,6 @@ app.route("/users").get(auth, (req, res, next) => {
     delete req.body.password;
     let newUser = req.body;
     if (user.isUser(newUser)) {
-        // TODO: check if username already exists
         let newUser = user.newUser(req.body);
         console.log(password);
         newUser.setPassword(password);
@@ -396,12 +394,25 @@ app.get("/table/:number/orders", auth, (req, res, next) => {
     });
 });
 
-// get all the statistics
-app.get("/statistics", auth, checkAdminRole, (req, res, next) => {
+// get or update all the statistics
+app.route("/statistics").get(auth, checkAdminRole, (req, res, next) => {
     statistic.getModel().find({}).then((stats) => {
         return res.status(200).json(stats);
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
+    });
+}).post(auth, checkAdminRole, (req, res, next) => {
+    statistic.getModel().updateMany({}, req.body).then(
+        (updated) => {
+            if (updated.acknowledged) {
+                ios.emit('updateStatistics');
+                return res.status(200).json(updated);
+            } else {
+                return res.status(404).json( {error:true, errormessage:"Invalid updating data"} );
+            }
+        }
+    ).catch((reason) => {
+        return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     });
 });
 
@@ -461,6 +472,8 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
                     data.tables_opened = update_table_stats(stat.tables_opened, req.body.tables_opened);
                 if (req.body.tables_closed !== undefined)
                     data.tables_closed = update_table_stats(stat.tables_closed, req.body.tables_closed);
+                if (req.body.total_revenue !== undefined)
+                    data.total_revenue = stat.total_revenue + req.body.total_revenue;
 
                 statistic.getModel().updateOne({username: req.params.username}, data).then(
                     (updated) => {
