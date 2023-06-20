@@ -63,9 +63,7 @@ export function newOrder(data): Order {
     return order;
 }
 
-// TODO: to test
 export function isOrder(data): data is Order {
-    console.log(data);
     return data && (!data.time || data.time instanceof Date) &&
     (!data.status || STATUS_ENUM.includes(data.status)) && 
     data.creator_username && typeof(data.creator_username) === "string" && 

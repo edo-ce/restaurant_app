@@ -40,7 +40,7 @@ export class OrdersHttpService {
   }
 
   set_order(id: any, data: Object): Observable<Order> {
-    return this.http.post<Order>(this.us.url + '/orders/' + id, data, this.us.create_options({})).pipe(
+    return this.http.put<Order>(this.us.url + '/orders/' + id, data, this.us.create_options({})).pipe(
       catchError(this.us.handleError)
     )
   }

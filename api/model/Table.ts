@@ -48,7 +48,6 @@ export function newTable(data): Table {
 }
 
 export function isTable(data): data is Table {
-    console.log(data);
     return data && data.number && typeof(data.number) === "number" && 
     (!data.occupied || typeof(data.occupied) === "boolean") && 
     data.seats_capacity && typeof(data.seats_capacity) === "number";

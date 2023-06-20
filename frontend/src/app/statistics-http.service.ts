@@ -31,13 +31,13 @@ export class StatisticsHttpService {
   }
 
   update_statistic(username: string, data: Object): Observable<Statistic> {
-    return this.http.post<Statistic>(this.us.url + '/statistics/' + username, data, this.us.create_options({})).pipe(
+    return this.http.put<Statistic>(this.us.url + '/statistics/' + username, data, this.us.create_options({})).pipe(
       catchError(this.us.handleError)
     )
   }
 
   reset_statistics(data: Object): Observable<Statistic> {
-    return this.http.post<Statistic>(this.us.url + '/statistics/', data, this.us.create_options({})).pipe(
+    return this.http.put<Statistic>(this.us.url + '/statistics/', data, this.us.create_options({})).pipe(
       catchError(this.us.handleError)
     )
   }

@@ -27,7 +27,6 @@ const dishSchema = new mongoose.Schema<Dish>({
         required: true
     },
     ingredients: {
-        // TODO: required may be false
         type: [mongoose.SchemaTypes.String],
         required: true
     }
@@ -64,7 +63,6 @@ export function newDish(data): Dish {
 }
 
 export function isDish(data): data is Dish {
-    console.log(data);
     return data && data.name && typeof(data.name) === "string" && 
     data.type && TYPE_ENUM.includes(data.type) && 
     data.price && typeof(data.price) === "number" && 

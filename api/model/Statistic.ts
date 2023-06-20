@@ -5,8 +5,8 @@ export interface Statistic extends mongoose.Document {
     num_orders: number, // how many orders served/prepared/checked out
     num_services: number, // how many work days
     dishes_prepared: [string, number][], // name of dish and amount prepared
-    tables_opened: [number, number, number][], // number of table, how many time opened and number of people
-    tables_closed: [number, number, number][], // number of table, how many time closed, and total amount spent
+    tables_opened: [number, number, number][], // number of table, how many times opened and number of people
+    tables_closed: [number, number, number][], // number of table, how many times closed, and total amount spent
     total_revenue: number
 }
 
@@ -64,7 +64,6 @@ export function newStatistic(data): Statistic {
 }
 
 export function isStatistic(data): data is Statistic {
-    console.log(data);
     return data && data.username && typeof(data.username) === "string" && 
     data.num_orders && typeof(data.num_orders) === "number" && 
     data.num_services && typeof(data.num_services) === "number"

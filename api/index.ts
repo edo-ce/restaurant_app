@@ -17,8 +17,6 @@ const { expressjwt: jwt } = require('express-jwt');            // JWT parsing mi
 import cors = require('cors');                  // Enable CORS middleware
 const io = require('socket.io');               // Socket.io websocket library
 
-
-// TODO: check this code about .env
 const result = require('dotenv').config();
 if (result.error) {
   console.log("Unable to load \".env\" file. Please provide one to store the JWT secret key");
@@ -83,7 +81,8 @@ const checkAdminRole = (req, res, next) => {
 // APIs
 
 app.get("/", auth, (req, res) => {
-    res.status(200).json({api_version: "1.0"}); // TODO: add endpoints
+    res.status(200).json({api_version: "1.0", endpoints: ["/users", "/users/:username", "/dishes", "/dishes/:name", "/tables", "/tables/:number", 
+    "/orders", "/orders/:id", "/statistics", "/statistics/:username", "/login"]});
 });
 
 // get all the users or add a new one
@@ -158,7 +157,7 @@ app.route("/users/:username").get(auth, checkAdminRole, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
-}).post(auth, (req, res, next) => {  
+}).put(auth, (req, res, next) => {  
     user.getModel().findOne({username: req.params.username}, {digest: 0, salt: 0}).then(
         (u) => {
             if (u) {
@@ -286,7 +285,7 @@ app.route("/tables/:number").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
-}).post(auth, (req, res, next) => {
+}).put(auth, (req, res, next) => {
     table.getModel().updateOne({number: req.params.number}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
@@ -351,7 +350,7 @@ app.route("/orders/:id").get(auth, (req, res, next) => {
     ).catch((reason) => {
         return next({ statusCode:404, error: true, errormessage: "DB error: "+reason });
     })
-}).post(auth, (req, res, next) => {
+}).put(auth, (req, res, next) => {
     order.getModel().updateOne({_id: req.params.id}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
@@ -401,7 +400,7 @@ app.route("/statistics").get(auth, checkAdminRole, (req, res, next) => {
     }).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).post(auth, checkAdminRole, (req, res, next) => {
+}).put(auth, checkAdminRole, (req, res, next) => {
     statistic.getModel().updateMany({}, req.body).then(
         (updated) => {
             if (updated.acknowledged) {
@@ -442,7 +441,7 @@ app.route("/statistics/:username").get(auth, checkAdminRole, (req, res, next) =>
     ).catch((reason) => {
         return next({statusCode: 404, error: true, errormessage: "DB error: " + reason});
     });
-}).post(auth, (req, res, next) => {
+}).put(auth, (req, res, next) => {
     statistic.getModel().findOne({username: req.params.username}, {}).then(
         (stat) => {
             if (stat) {
@@ -558,7 +557,7 @@ const retrieveData = (data, type) => {
 
 
 // Connect to DB using Mongoose
-mongoose.connect('mongodb://mymongo:27017/index')
+mongoose.connect('mongodb+srv://edo:edo@cluster0.xehvg80.mongodb.net/?retryWrites=true&w=majority')
 .then(
     () => {
         console.log("Connected to MongoDB");

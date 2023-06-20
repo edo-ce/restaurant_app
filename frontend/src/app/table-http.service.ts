@@ -14,7 +14,6 @@ export class TableHttpService {
     console.log('User service token: ' + us.get_token());
   }
 
-  // returns the list of existing tables
   get_tables(): Observable<Table[]> {
     return this.http.get<Table[]>(this.us.url + '/tables', this.us.create_options({})).pipe(
         tap( (data) => {
@@ -25,7 +24,7 @@ export class TableHttpService {
   }
 
   set_table(number: number, data: Object): Observable<Table> {
-    return this.http.post<Table>(this.us.url + '/tables/' + number, data, this.us.create_options({})).pipe(
+    return this.http.put<Table>(this.us.url + '/tables/' + number, data, this.us.create_options({})).pipe(
       catchError(this.us.handleError)
     )
   }

@@ -1,20 +1,15 @@
 import mongoose = require('mongoose');
 import crypto = require('crypto');
 
-// TODO: aggiungi email e telefono per contatti
-// TODO: possibility to change password
-
 export interface User extends mongoose.Document {
     username: string,
     name: string,
     surname: string,
-    role: string, // make it an array like roles?
+    role: string,
     salt: string,
     digest: string,
     setPassword: (password: string) => void,
     checkPassword: (password: string) => boolean,
-    checkRole: (role: string) => boolean,
-    setRole: (role: string) => void,
     isAdmin: () => boolean,
     setAdmin: () => void
 }
@@ -68,20 +63,12 @@ userSchema.methods.checkPassword = function(password: string) {
     return this.digest === digest;
 }
 
-userSchema.methods.checkRole = function(role: string) {
-    return this.role === role;
-}
-
-userSchema.methods.setRole = function(role: string) {
-    this.role = role;
-}
-
 userSchema.methods.isAdmin = function() {
-    return this.checkRole(ADMIN);
+    return this.role === ADMIN;
 }
 
 userSchema.methods.setAdmin = function() {
-    this.setRole(ADMIN);
+    this.role = ADMIN;
 }
 
 export function getSchema() {
@@ -103,8 +90,6 @@ export function newUser(data): User {
 }
 
 export function isUser(data): data is User {
-    // TODO: remove
-    console.log(data);
     return data && data.username && typeof(data.username) === "string" && 
     data.name && typeof(data.name) === "string" && 
     data.surname && typeof(data.surname) === "string" && 
