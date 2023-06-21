@@ -1,26 +1,44 @@
 [
     {
-        "name": "Pizza Margherita",
+        "name": "pizza margherita",
         "type": "food",
-        "price": 5.50,
+        "price": 6.50,
         "ingredients": ["pasta", "pomodoro", "mozzarella"]
     }, 
     {
-        "name": "Spaghetti allo Scoglio",
+        "name": "penne pomodoro",
         "type": "food",
-        "price": 8.50,
-        "ingredients": ["pasta", "pomodoro", "frutti di mare"]
+        "price": 7,
+        "ingredients": ["pasta", "tomato", "sea fruits"]
     },
     {
-        "name": "Coca Cola",
-        "type": "drink",
-        "price": 2.50,
-        "ingredients": []
+        "name": "mixed fried",
+        "type": "food",
+        "price": 10.50,
+        "ingredients": ["shrimp", "squid", "sardines"]
+    }, 
+    {
+        "name": "beef",
+        "type": "food",
+        "price": 10,
+        "ingredients": ["beef", "rocket", "cherry tomatoes"]
     },
     {
-        "name": "Birra Media",
+        "name": "coca cola",
         "type": "drink",
         "price": 3,
+        "ingredients": ["carbonated water", "sugar"]
+    },
+    {
+        "name": "medium bier",
+        "type": "drink",
+        "price": 4.50,
+        "ingredients": ["grain", "hops", "yeast", "water"]
+    },
+    {
+        "name": "medium water",
+        "type": "drink",
+        "price": 2.50,
         "ingredients": []
     }
 ]

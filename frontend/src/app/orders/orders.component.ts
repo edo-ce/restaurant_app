@@ -23,7 +23,7 @@ export class OrdersComponent implements OnInit {
   public total_price: number = 0;
   public receipt: any = {};
   public receipt_keys: string[] = [];
-  public table_seats: any = undefined;
+  public table_seats: number = 0;
   errmessage = undefined;
   public status_class: any = {'todo': 'todo', 'in progress': 'progress', 'to serve': 'serve', 'done': 'done'};
   private static STATUS_ENUM: any = {"to serve": 0, "in progress": 1, "todo": 2, "done": 3};
@@ -34,9 +34,7 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.table_number = this.route.snapshot.paramMap.get('number');
     this.get_socket_orders();
-    this.get_orders();
-    if (this.table_number)
-      this.get_table_seats();
+    this.get_orders();  
   }
 
   private get_socket_orders(): void {
@@ -67,7 +65,7 @@ export class OrdersComponent implements OnInit {
         this.orders = orders.sort((a, b) => OrdersComponent.STATUS_ENUM[a.status] - OrdersComponent.STATUS_ENUM[b.status]);
         console.log(this.orders);
         if (this.table_number)
-          this.get_price();
+          this.get_table_seats();
       },
       error: (error) => {
         this.router.navigate(["notfound"]);
@@ -105,6 +103,7 @@ export class OrdersComponent implements OnInit {
     this.ts.get_table(this.table_number).subscribe({
       next: (table: Table) => {
         this.table_seats = table.seats_occupied;
+        this.get_price();
       },
       error: (error) => {
         console.log('Error occured while getting: ' + error);

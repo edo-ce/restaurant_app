@@ -1,7 +1,7 @@
 .table {
     width: 120px;
     height: 120px;
-    margin: 40px auto; /* TODO: remove auto for larger visualization */
+    margin: 40px auto;
     border: 1px solid black;
     display: flex;
     justify-content: center;

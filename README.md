@@ -3,7 +3,9 @@
 Made with the MEAN stack (MongoDB + ExpressJS + Angular + NodeJS)
 ---
 
-How to run it via Docker:
+### How to run it via Docker:
+
+From the restaurant_app folder:
 
 1. Create a new network
 
@@ -47,8 +49,17 @@ docker run -d --name frontend-container --network=restaurant_app -p 4200:4200 fr
 http://localhost:4200/
 ```
 
+### To test:
 
-Optional:
+Usernames:
+- cashier: admin, user1
+- cook: user2, user3
+- bartender: user4, user5
+- waiter: user6, user7, user8, user9
+
+Users' passwords are the same as their username (e.g. user1:user1)
+
+### Optional:
 ---
 
 To inspect the database with mongo shell:

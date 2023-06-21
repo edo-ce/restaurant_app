@@ -1,60 +1,92 @@
 [
     {
-        "creator_username": "admin",
+        "creator_username": "user6",
         "table_number": 3,
         "type": "food",
         "dishes": [
             [{
-                "name": "Spaghetti allo Scoglio",
+                "name": "penne pomodoro",
                 "type": "food",
-                "price": 8.50,
-                "ingredients": ["pasta", "pomodoro", "frutti di mare"]
+                "price": 7,
+                "ingredients": ["pasta", "tomato", "sea fruits"]
             }, 1],
             [{
-                "name": "Pizza Margherita",
+                "name": "pizza margherita",
                 "type": "food",
-                "price": 5.50,
+                "price": 6.50,
                 "ingredients": ["pasta", "pomodoro", "mozzarella"]
             }, 1]
         ]
     },
     {
-        "creator_username": "admin",
+        "creator_username": "user6",
         "table_number": 3,
         "type": "drink",
         "dishes": [
             [{
-                "name": "Coca Cola",
+                "name": "coca cola",
                 "type": "drink",
-                "price": 2.50,
-                "ingredients": []
+                "price": 3,
+                "ingredients": ["carbonated water", "sugar"]
             }, 2]
         ]
     },
     {
-        "creator_username": "user1",
+        "creator_username": "user7",
         "table_number": 5,
         "type": "food",
         "dishes": [
             [{
-                "name": "Pizza Margherita",
+                "name": "pizza margherita",
                 "type": "food",
-                "price": 5.50,
+                "price": 6.50,
                 "ingredients": ["pasta", "pomodoro", "mozzarella"]
             }, 2]
         ]
     },
     {
-        "creator_username": "user1",
+        "creator_username": "user7",
         "table_number": 5,
         "type": "drink",
         "dishes": [
             [{
-                "name": "Coca Cola",
+                "name": "coca cola",
+                "type": "drink",
+                "price": 3,
+                "ingredients": ["carbonated water", "sugar"]
+            }, 1]
+        ]
+    },
+    {
+        "creator_username": "user8",
+        "table_number": 7,
+        "type": "food",
+        "dishes": [
+            [{
+                "name": "beef",
+                "type": "food",
+                "price": 10,
+                "ingredients": ["beef", "rocket", "cherry tomatoes"]
+            }, 1],
+            [{
+                "name": "mixed fried",
+                "type": "food",
+                "price": 10.50,
+                "ingredients": ["shrimp", "squid", "sardines"]
+            }, 1]
+        ]
+    },
+    {
+        "creator_username": "user8",
+        "table_number": 7,
+        "type": "drink",
+        "dishes": [
+            [{
+                "name": "medium water",
                 "type": "drink",
                 "price": 2.50,
                 "ingredients": []
-            }, 1]
+            }, 2]
         ]
     }
 ]

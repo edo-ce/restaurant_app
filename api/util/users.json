@@ -13,20 +13,44 @@
     },
     {
         "username": "user3",
+        "name": "Gianluca",
+        "surname": "Zorti",
+        "role": "cook"
+    },
+    {
+        "username": "user4",
         "name": "Alice",
         "surname": "Barro",
         "role": "bartender"
     },
     {
-        "username": "user4",
+        "username": "user5",
+        "name": "Davide",
+        "surname": "Mattei",
+        "role": "bartender"
+    },
+    {
+        "username": "user6",
         "name": "Giovanni",
         "surname": "Gioia",
         "role": "waiter"
     },
     {
-        "username": "user5",
+        "username": "user7",
         "name": "Anna",
         "surname": "Remi",
+        "role": "waiter"
+    },
+    {
+        "username": "user8",
+        "name": "Annalisa",
+        "surname": "Pozzi",
+        "role": "waiter"
+    },
+    {
+        "username": "user9",
+        "name": "Marco",
+        "surname": "Fausti",
         "role": "waiter"
     }
 ]

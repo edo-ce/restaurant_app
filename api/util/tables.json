@@ -26,5 +26,15 @@
     {
         "number": 6,
         "seats_capacity": 7
+    },
+    {
+        "number": 7,
+        "seats_capacity": 4,
+        "seats_occupied": 4,
+        "occupied": true
+    },
+    {
+        "number": 8,
+        "seats_capacity": 6
     }
 ]
