@@ -4,6 +4,7 @@ Made with the MEAN stack (MongoDB + ExpressJS + Angular + NodeJS)
 ---
 
 ### How to run it via Docker:
+---
 
 From the restaurant_app folder:
 
@@ -50,6 +51,7 @@ http://localhost:4200/
 ```
 
 ### To test:
+---
 
 Usernames:
 - cashier: admin, user1
